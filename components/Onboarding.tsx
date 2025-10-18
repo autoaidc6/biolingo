@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from './ui/Button';
@@ -37,11 +38,16 @@ export const Onboarding: React.FC = () => {
     }, 1000);
   };
 
+  const handleGuestLogin = async () => {
+    setIsLoading(true);
+    await login('guest@biolingo.com', 'password');
+  };
+
 
   if (formState === 'login' || formState === 'signup') {
     return (
       <div className="min-h-screen bg-white flex flex-col justify-center p-6">
-        <button onClick={() => setFormState('welcome')} className="absolute top-4 left-4 text-gray-500 font-bold text-2xl">&times;</button>
+        <button onClick={() => setFormState('welcome')} className="absolute top-4 left-4 text-gray-500 font-bold text-2xl" disabled={isLoading}>&times;</button>
         <h2 className="text-2xl font-bold text-brand-text text-center mb-8">
             {formState === 'login' ? 'Log in to your account' : 'Create an account'}
         </h2>
@@ -65,8 +71,11 @@ export const Onboarding: React.FC = () => {
         <p className="text-gray-500 mt-2">The fun, free way to learn a new language.</p>
       </div>
       <div className="p-6 space-y-3">
-        <Button fullWidth onClick={() => setFormState('signup')}>Get Started</Button>
-        <Button variant="outline" fullWidth onClick={() => setFormState('login')}>I already have an account</Button>
+        <Button fullWidth onClick={() => setFormState('signup')} disabled={isLoading}>Get Started</Button>
+        <Button variant="outline" fullWidth onClick={() => setFormState('login')} disabled={isLoading}>I already have an account</Button>
+        <Button variant="ghost" fullWidth onClick={handleGuestLogin} disabled={isLoading}>
+          {isLoading ? 'Signing in...' : 'Continue as Guest'}
+        </Button>
       </div>
     </div>
   );
