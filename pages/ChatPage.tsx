@@ -35,9 +35,13 @@ export const ChatPage: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const initChat = async () => {
+    const initChat = () => {
+      setIsLoading(true);
       try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+        if (!process.env.API_KEY) {
+          throw new Error("API_KEY environment variable not set.");
+        }
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const chatSession = ai.chats.create({
           model: 'gemini-2.5-flash',
           config: {
@@ -50,8 +54,12 @@ export const ChatPage: React.FC = () => {
         ]);
       } catch (error) {
         console.error("Failed to initialize chat:", error);
+        let errorMessage = 'Sorry, I couldn\'t connect to my brain right now. Please try again later.';
+        if (error instanceof Error && error.message.includes("API_KEY")) {
+            errorMessage = 'It looks like I\'m not configured correctly. I can\'t chat right now, sorry! 🛠️';
+        }
         setMessages([
-          { id: 1, text: 'Sorry, I couldn\'t connect to my brain right now. Please try again later.', sender: 'bot' },
+          { id: 1, text: errorMessage, sender: 'bot' },
         ]);
       } finally {
         setIsLoading(false);
