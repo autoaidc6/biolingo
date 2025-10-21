@@ -1,4 +1,10 @@
 
+export enum LessonType {
+  READING = 'READING',
+  QUIZ = 'QUIZ',
+  MATCHING = 'MATCHING',
+}
+
 export interface User {
   id: string;
   email: string;
@@ -8,10 +14,16 @@ export interface User {
   points: number;
 }
 
-export enum LessonType {
-  QUIZ = 'quiz',
-  READING = 'reading',
-  MATCHING = 'matching',
+export interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+}
+
+export interface MatchingPair {
+  id: number;
+  term: string;
+  definition: string;
 }
 
 export interface Lesson {
@@ -19,13 +31,14 @@ export interface Lesson {
   title: string;
   type: LessonType;
   completed: boolean;
+  content: string[] | QuizQuestion[] | MatchingPair[];
 }
 
 export interface Course {
   id: string;
   title: string;
   description: string;
-  icon: string; // Emoji or SVG string
-  color: string; // Tailwind color class
+  icon: string;
+  color: string;
   lessons: Lesson[];
 }

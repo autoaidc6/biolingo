@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from './ui/Button';
@@ -64,13 +63,13 @@ export const Onboarding: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col bg-gradient-to-b from-green-50 via-white to-white">
       <div className="flex-grow flex flex-col items-center justify-center text-center px-6">
         <LogoIcon />
-        <h1 className="text-3xl font-extrabold text-brand-text mt-4">Welcome to Biolingo!</h1>
-        <p className="text-gray-500 mt-2">The fun, free way to learn a new language.</p>
+        <h1 className="text-4xl font-extrabold text-brand-text mt-4">Welcome to Biolingo!</h1>
+        <p className="text-gray-500 mt-2 text-lg">The fun, free way to learn a new language.</p>
       </div>
-      <div className="p-6 space-y-3">
+      <div className="p-6 space-y-3 bg-white">
         <Button fullWidth onClick={() => setFormState('signup')} disabled={isLoading}>Get Started</Button>
         <Button variant="outline" fullWidth onClick={() => setFormState('login')} disabled={isLoading}>I already have an account</Button>
         <Button variant="ghost" fullWidth onClick={handleGuestLogin} disabled={isLoading}>

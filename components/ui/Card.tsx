@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface CardProps {
@@ -8,7 +7,7 @@ interface CardProps {
 
 export const Card: React.FC<CardProps> = ({ children, className }) => {
   return (
-    <div className={`bg-white rounded-xl border-2 border-brand-stroke p-4 ${className || ''}`}>
+    <div className={`bg-white rounded-2xl border border-gray-200/80 shadow-sm p-6 ${className || ''}`}>
       {children}
     </div>
   );

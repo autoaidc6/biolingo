@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline';
@@ -10,11 +9,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean;
 }
 
-const baseClasses = 'font-bold rounded-xl transition-transform duration-200 ease-in-out active:scale-95 flex items-center justify-center';
+const baseClasses = 'font-semibold rounded-xl transition-all duration-200 ease-in-out active:scale-95 flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed';
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-brand-green text-white border-b-4 border-brand-green-dark hover:bg-green-500',
-  secondary: 'bg-brand-blue text-white border-b-4 border-brand-blue-dark hover:bg-blue-500',
+  primary: 'bg-brand-green text-white border-b-4 border-brand-green-dark hover:bg-green-500 shadow-sm hover:shadow-md',
+  secondary: 'bg-brand-blue text-white border-b-4 border-brand-blue-dark hover:bg-blue-500 shadow-sm hover:shadow-md',
   ghost: 'bg-transparent text-brand-text hover:bg-gray-200',
   outline: 'bg-transparent text-brand-green border-2 border-brand-stroke hover:bg-gray-100'
 };
@@ -22,7 +21,7 @@ const variantClasses: Record<ButtonVariant, string> = {
 const sizeClasses: Record<ButtonSize, string> = {
   sm: 'py-2 px-4 text-sm',
   md: 'py-3 px-6 text-base',
-  lg: 'py-4 px-8 text-lg uppercase tracking-wider',
+  lg: 'py-4 px-8 text-lg uppercase tracking-wider rounded-2xl',
 };
 
 export const Button: React.FC<ButtonProps> = ({

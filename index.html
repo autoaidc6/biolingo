@@ -12,11 +12,18 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
     <!-- End PWA Meta Tags -->
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
+            fontFamily: {
+              sans: ['Poppins', 'sans-serif'],
+            },
             colors: {
               'brand-green': '#58CC02',
               'brand-green-dark': '#4CAF50',
@@ -25,6 +32,7 @@
               'brand-gray': '#E5E5E5',
               'brand-text': '#4B4B4B',
               'brand-stroke': '#E5E5E5',
+              'brand-off-white': '#F7F5F2',
             },
           },
         },
@@ -33,17 +41,17 @@
   <script type="importmap">
 {
   "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.4",
+    "react/": "https://esm.sh/react@19/",
+    "react": "https://esm.sh/react@19",
+    "react-dom/": "https://esm.sh/react-dom@19/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.9.4",
     "framer-motion": "https://esm.sh/framer-motion@11",
     "@google/genai": "https://esm.run/@google/genai"
   }
 }
 </script>
 </head>
-  <body class="bg-gray-50 antialiased">
+  <body class="bg-brand-off-white text-brand-text antialiased font-sans">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
 

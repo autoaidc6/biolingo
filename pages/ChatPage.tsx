@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { GoogleGenAI, Chat } from '@google/genai';
+import { SpeakerIcon } from '../components/ui/Icons';
 
 // Simple typing indicator component
 const TypingIndicator = () => (
@@ -26,6 +27,11 @@ Your goal is to help users learn and practice Spanish in a fun and conversationa
 - When asked a question, provide a direct answer and then try to engage the user with a related question to keep the conversation going.
 - Use emojis to make the conversation more engaging. 👍🎉📚
 - Never break character. You are always Ustaza AI.`;
+
+const chatAreaStyle = {
+    backgroundImage: 'radial-gradient(#d4d4d4 1px, transparent 1px)',
+    backgroundSize: '16px 16px',
+};
 
 export const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -66,6 +72,12 @@ export const ChatPage: React.FC = () => {
       }
     };
     initChat();
+    // Cleanup speech synthesis on component unmount
+    return () => {
+        if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+        }
+    }
   }, []);
 
   const scrollToBottom = () => {
@@ -73,6 +85,17 @@ export const ChatPage: React.FC = () => {
   };
 
   useEffect(scrollToBottom, [messages]);
+  
+  const speak = (text: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'es-ES'; // Set language to Spanish for better pronunciation
+      window.speechSynthesis.cancel(); // Stop any currently speaking utterance
+      window.speechSynthesis.speak(utterance);
+    } else {
+      alert("Sorry, your browser doesn't support text-to-speech.");
+    }
+  };
 
 
   const handleSend = async () => {
@@ -113,10 +136,15 @@ export const ChatPage: React.FC = () => {
   return (
     <div className="flex flex-col h-[85vh]">
       <h1 className="text-3xl font-bold text-brand-text mb-4">Chat with Ustaza AI</h1>
-      <div className="flex-grow bg-white border-2 border-brand-stroke rounded-xl p-4 overflow-y-auto space-y-4">
+      <div style={chatAreaStyle} className="flex-grow bg-white border-2 border-brand-stroke rounded-2xl p-4 overflow-y-auto space-y-4">
         {messages.map((msg) => (
-          <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${msg.sender === 'user' ? 'bg-brand-blue text-white' : 'bg-brand-gray text-brand-text'}`}>
+          <div key={msg.id} className={`flex items-end gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+            {msg.sender === 'bot' && msg.text && (
+                 <button onClick={() => speak(msg.text)} title="Read aloud" className="p-1 text-gray-400 hover:text-brand-blue transition-colors self-center">
+                     <SpeakerIcon className="w-5 h-5"/>
+                 </button>
+            )}
+            <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-sm ${msg.sender === 'user' ? 'bg-brand-blue text-white rounded-br-lg' : 'bg-gray-100 text-brand-text rounded-bl-lg'}`}>
               {msg.text === '' && msg.sender === 'bot' ? <TypingIndicator /> : <p className="whitespace-pre-wrap">{msg.text}</p>}
             </div>
           </div>
