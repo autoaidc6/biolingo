@@ -12,6 +12,7 @@ const CourseDetailPage = lazy(() => import('../pages/CourseDetailPage').then(mod
 const LessonPage = lazy(() => import('../pages/LessonPage').then(module => ({ default: module.LessonPage })));
 const ChatPage = lazy(() => import('../pages/ChatPage').then(module => ({ default: module.ChatPage })));
 const ProfilePage = lazy(() => import('../pages/ProfilePage').then(module => ({ default: module.ProfilePage })));
+const ScanPage = lazy(() => import('../pages/ScanPage').then(module => ({ default: module.ScanPage })));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage').then(module => ({ default: module.NotFoundPage })));
 
 
@@ -41,6 +42,7 @@ export const AppRouter: React.FC = () => {
               <Route path="lesson/:id" element={<LessonPage />} />
               <Route path="chat" element={<ChatPage />} />
               <Route path="profile" element={<ProfilePage />} />
+              <Route path="scan" element={<ScanPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>
           ) : (

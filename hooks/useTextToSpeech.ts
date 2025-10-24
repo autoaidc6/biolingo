@@ -45,6 +45,11 @@ export const useTextToSpeech = (text: string) => {
             stopCurrentlyPlaying();
         }
 
+        if (!text || !text.trim()) {
+            console.warn("TTS requested for empty text.");
+            return;
+        }
+
         let audioBuffer: AudioBuffer | undefined = audioCache.get(text);
 
         if (!audioBuffer) {
@@ -55,7 +60,7 @@ export const useTextToSpeech = (text: string) => {
                 }
                 const response = await ai.models.generateContent({
                     model: "gemini-2.5-flash-preview-tts",
-                    contents: [{ parts: [{ text }] }],
+                    contents: text,
                     config: {
                         responseModalities: [Modality.AUDIO],
                         speechConfig: {

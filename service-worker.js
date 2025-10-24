@@ -1,10 +1,12 @@
-const CACHE_NAME = 'biolingo-v2';
+const CACHE_NAME = 'biolingo-v3';
+const DATA_CACHE_NAME = 'biolingo-data-v1';
+
 // This list should ideally be populated by a build tool.
-// For now, we list the essential files for the app shell and core data.
+// For now, we list the essential files for the app shell.
 const URLS_TO_CACHE = [
   '/',
   '/index.html',
-  '/index.tsx', // Caches the core app logic and lesson data
+  '/index.tsx', 
   '/manifest.json',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
@@ -16,15 +18,52 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Opened cache');
+        console.log('Opened core cache');
         return cache.addAll(URLS_TO_CACHE);
       })
   );
 });
 
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'CACHE_LESSON_DATA') {
+        const lessonData = event.data.payload;
+        caches.open(DATA_CACHE_NAME).then(cache => {
+            const response = new Response(JSON.stringify(lessonData));
+            cache.put('/api/courses', response);
+            console.log('Lesson data cached by service worker.');
+        });
+    }
+});
+
+
 // Serve cached content when offline.
 self.addEventListener('fetch', event => {
-  // We only want to cache GET requests.
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // For API calls for lesson data, serve from cache.
+  if (url.pathname === '/api/courses') {
+      event.respondWith(
+          caches.match(request).then(response => {
+              // This should always find a match once the app has loaded once.
+              return response || new Response('[]', { headers: { 'Content-Type': 'application/json' } });
+          })
+      );
+      return;
+  }
+
+  // For API calls to complete a lesson, mock a success response.
+  if (url.pathname === '/api/complete-lesson' && request.method === 'POST') {
+      event.respondWith(
+          new Response(JSON.stringify({ success: true }), {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' }
+          })
+      );
+      return;
+  }
+  
+  // We only want to cache GET requests for other resources.
   if (event.request.method !== 'GET') {
     return;
   }
@@ -47,8 +86,6 @@ self.addEventListener('fetch', event => {
               return response;
             }
             
-            // We don't cache 'basic' type responses for external resources like esm.sh
-            // as they can have issues with opaque responses. Let browser handle them.
             if (response.type !== 'basic' && !event.request.url.startsWith(self.location.origin)) {
                 return response;
             }
@@ -69,7 +106,7 @@ self.addEventListener('fetch', event => {
 
 // Clean up old caches on activation.
 self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
+  const cacheWhitelist = [CACHE_NAME, DATA_CACHE_NAME];
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(

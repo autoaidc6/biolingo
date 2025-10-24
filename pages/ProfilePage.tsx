@@ -13,8 +13,16 @@ const achievements = [
   { id: 4, title: 'Point Collector', icon: <GemIcon className="w-8 h-8 text-purple-500" />, unlocked: false },
 ];
 
+const learningGoals = [
+    "Travel",
+    "Career",
+    "Connect with Family",
+    "Brain Training",
+    "Just for Fun"
+];
+
 export const ProfilePage: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateLearningGoal } = useAuth();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -55,7 +63,7 @@ export const ProfilePage: React.FC = () => {
 
   return (
     <motion.div
-      className="space-y-6 text-center"
+      className="space-y-6"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -73,9 +81,26 @@ export const ProfilePage: React.FC = () => {
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <Card>
+        <Card className="text-left">
+          <h2 className="text-xl font-bold text-brand-text mb-2">My Learning Goal</h2>
+          <p className="text-gray-500 mb-4 text-sm">Select a goal to get personalized lesson recommendations.</p>
+          <select 
+            value={user.learningGoal || ''}
+            onChange={(e) => updateLearningGoal(e.target.value)}
+            className="w-full bg-gray-100 border-2 border-brand-stroke rounded-xl p-4 text-brand-text placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-blue"
+          >
+            <option value="" disabled>Select a goal...</option>
+            {learningGoals.map(goal => (
+                <option key={goal} value={goal}>{goal}</option>
+            ))}
+          </select>
+        </Card>
+      </motion.div>
+
+      <motion.div variants={itemVariants}>
+        <Card className="text-left">
           <h2 className="text-xl font-bold text-brand-text mb-4">Statistics</h2>
-          <div className="flex justify-around">
+          <div className="flex justify-around text-center">
             <div className="text-center">
               <p className="text-3xl font-bold text-orange-500">{user.streak}</p>
               <p className="text-sm text-gray-500">Day Streak</p>
@@ -93,7 +118,7 @@ export const ProfilePage: React.FC = () => {
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <Card>
+        <Card className="text-left">
           <h2 className="text-xl font-bold text-brand-text mb-4">Achievements</h2>
           <motion.div
             className="grid grid-cols-4 gap-2 sm:gap-4"

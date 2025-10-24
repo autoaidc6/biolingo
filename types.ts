@@ -12,6 +12,7 @@ export interface User {
   avatarUrl: string;
   streak: number;
   points: number;
+  learningGoal?: string;
 }
 
 export interface QuizQuestion {
@@ -35,7 +36,7 @@ export interface Lesson {
 }
 
 export interface Course {
-  id: string;
+  id:string;
   title: string;
   description: string;
   icon: string;

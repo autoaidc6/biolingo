@@ -9,6 +9,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
+  updateLearningGoal: (goal: string) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,12 +51,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.removeItem('biolingo_user');
   };
 
+  const updateLearningGoal = (goal: string) => {
+    if (user) {
+      const updatedUser = { ...user, learningGoal: goal };
+      setUser(updatedUser);
+      localStorage.setItem('biolingo_user', JSON.stringify(updatedUser));
+    }
+  };
+
   const value = {
     user,
     isAuthenticated: !!user,
     login,
     logout,
     isLoading,
+    updateLearningGoal,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

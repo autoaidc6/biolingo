@@ -4,7 +4,9 @@ import { NavLink } from 'react-router-dom';
 
 const navItems = [
   { path: '/dashboard', label: 'Learn', icon: (active: boolean) => <HomeIcon active={active} /> },
-  { path: '/courses', label: 'Courses', icon: (active: boolean) => <BookOpenIcon active={active} /> },
+  // FIX: The CameraIcon was previously imported and did not support the `active` prop. 
+  // It is now defined locally to match the other icons in this component.
+  { path: '/scan', label: 'Scan', icon: (active: boolean) => <CameraIcon active={active} /> },
   { path: '/chat', label: 'Chat', icon: (active: boolean) => <ChatBubbleIcon active={active} /> },
   { path: '/profile', label: 'Profile', icon: (active: boolean) => <UserIcon active={active} /> },
 ];
@@ -45,16 +47,16 @@ const HomeIcon = ({ active }: { active: boolean }) => (
     <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
   </svg>
 );
-const BookOpenIcon = ({ active }: { active: boolean }) => (
+
+// FIX: Define CameraIcon locally to support the `active` prop for fill color, consistent with other nav icons.
+const CameraIcon = ({ active }: { active: boolean }) => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill={active ? 'currentColor' : 'none'} strokeLinecap="round" strokeLinejoin="round">
     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-    <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-    <line x1="3" y1="6" x2="3" y2="19" />
-    <line x1="12" y1="6" x2="12" y2="19" />
-    <line x1="21" y1="6" x2="21" y2="19" />
+    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+    <circle cx="12" cy="13" r="4" />
   </svg>
 );
+
 const ChatBubbleIcon = ({ active }: { active: boolean }) => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill={active ? 'currentColor' : 'none'} strokeLinecap="round" strokeLinejoin="round">
     <path stroke="none" d="M0 0h24v24H0z" fill="none" />

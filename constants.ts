@@ -7,6 +7,7 @@ export const MOCK_USER: User = {
   avatarUrl: 'https://picsum.photos/seed/alex/100/100',
   streak: 5,
   points: 1250,
+  learningGoal: 'Travel',
 };
 
 export const MOCK_COURSES: Course[] = [

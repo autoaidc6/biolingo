@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FlameIcon, GemIcon, CheckCircleIcon, ArrowRightIcon } from '../components/ui/Icons';
 import { useCourses } from '../contexts/CourseContext';
+import { RecommendedLesson } from '../components/RecommendedLesson';
 
 const StatCard: React.FC<{ icon: React.ReactNode; label: string; value: string | number; color: string }> = ({ icon, label, value, color }) => (
     <div className={`flex-1 p-4 rounded-2xl ${color}`}>
@@ -68,6 +69,8 @@ export const DashboardPage: React.FC = () => {
         <StatCard icon={<GemIcon className="w-8 h-8 text-blue-500"/>} label="Total Points" value={user.points} color="bg-blue-100/70" />
         <StatCard icon={<CheckCircleIcon className="w-8 h-8 text-green-500"/>} label="Lessons Done" value={lessonsCompleted} color="bg-green-100/70" />
       </motion.div>
+
+      <RecommendedLesson />
 
       <motion.div variants={itemVariants}>
         <Link 
