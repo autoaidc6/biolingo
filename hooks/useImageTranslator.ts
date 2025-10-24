@@ -5,6 +5,7 @@ export interface TranslationResult {
     detectedText: string;
     detectedLanguage: string;
     translatedText: string;
+    translatedLanguage: string;
 }
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -13,10 +14,11 @@ const schema = {
     type: Type.OBJECT,
     properties: {
         detectedText: { type: Type.STRING, description: 'The exact text extracted from the image.' },
-        detectedLanguage: { type: Type.STRING, description: 'The language of the extracted text (e.g., "English", "French").' },
-        translatedText: { type: Type.STRING, description: 'The translation of the extracted text into Spanish.' },
+        detectedLanguage: { type: Type.STRING, description: 'The language of the extracted text (e.g., "English", "Spanish").' },
+        translatedText: { type: Type.STRING, description: 'The translation of the extracted text.' },
+        translatedLanguage: { type: Type.STRING, description: 'The language of the translated text (e.g., "English", "Spanish"). Will be empty if no translation was performed.' },
     },
-    required: ["detectedText", "detectedLanguage", "translatedText"]
+    required: ["detectedText", "detectedLanguage", "translatedText", "translatedLanguage"]
 };
 
 export const useImageTranslator = () => {
@@ -42,7 +44,13 @@ export const useImageTranslator = () => {
             };
 
             const textPart = {
-                text: `Extract the text from this image, identify its language, and translate it to Spanish. If no text is found, return empty strings for all fields.`
+                text: `You are a text extractor and translator. Your task is to extract text from an image, identify its language, and translate it.
+1. Extract all visible text from the image.
+2. Identify the language of the extracted text.
+3. - If the language is Spanish, translate the text to English. Set 'translatedLanguage' to "English".
+   - If the language is English, translate the text to Spanish. Set 'translatedLanguage' to "Spanish".
+   - If the language is neither Spanish nor English, set 'translatedText' to an empty string and 'translatedLanguage' to an empty string.
+4. If no text is found in the image, return empty strings for all fields.`
             };
             
             const response = await ai.models.generateContent({
@@ -59,6 +67,13 @@ export const useImageTranslator = () => {
             if (!resultJson.detectedText) {
                 setError("No text could be found in the image. Please try another one.");
                 return;
+            }
+
+            if (!resultJson.translatedText) {
+                 setError(`Translation from ${resultJson.detectedLanguage} is not supported. Please use an image with English or Spanish text.`);
+                 // Still show the user what was detected.
+                 setResult({ ...resultJson, translatedText: '', translatedLanguage: '' });
+                 return;
             }
 
             setResult(resultJson);

@@ -28,22 +28,24 @@ const ResultCard: React.FC<{ result: TranslationResult }> = ({ result }) => {
                 <h3 className="font-bold text-gray-500 mb-2">Detected Text ({result.detectedLanguage})</h3>
                 <p className="text-brand-text text-lg italic">"{result.detectedText}"</p>
             </Card>
-            <Card>
-                <div className="flex justify-between items-start">
-                    <div>
-                        <h3 className="font-bold text-gray-500 mb-2">Translation (Spanish)</h3>
-                        <p className="text-brand-text text-lg font-semibold">"{result.translatedText}"</p>
+            {result.translatedText && result.translatedLanguage && (
+                 <Card>
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <h3 className="font-bold text-gray-500 mb-2">Translation ({result.translatedLanguage})</h3>
+                            <p className="text-brand-text text-lg font-semibold">"{result.translatedText}"</p>
+                        </div>
+                        <button 
+                            onClick={togglePlay} 
+                            className="p-2 text-gray-500 hover:text-brand-blue transition-colors flex-shrink-0 disabled:opacity-50"
+                            aria-label={isPlaying ? 'Stop audio' : 'Play audio'}
+                            disabled={isAudioLoading}
+                        >
+                            {isAudioLoading ? <LoadingSpinnerIcon className="w-6 h-6" /> : isPlaying ? <StopIcon className="w-6 h-6 text-brand-blue" /> : <SpeakerIcon className="w-6 h-6" />}
+                        </button>
                     </div>
-                    <button 
-                        onClick={togglePlay} 
-                        className="p-2 text-gray-500 hover:text-brand-blue transition-colors flex-shrink-0 disabled:opacity-50"
-                        aria-label={isPlaying ? 'Stop audio' : 'Play audio'}
-                        disabled={isAudioLoading}
-                    >
-                        {isAudioLoading ? <LoadingSpinnerIcon className="w-6 h-6" /> : isPlaying ? <StopIcon className="w-6 h-6 text-brand-blue" /> : <SpeakerIcon className="w-6 h-6" />}
-                    </button>
-                </div>
-            </Card>
+                </Card>
+            )}
         </div>
     )
 }
@@ -85,7 +87,7 @@ export const ScanPage: React.FC = () => {
                 {!imageSrc ? (
                     <motion.div key="initial" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                         <Card className="flex flex-col items-center justify-center text-center p-8 space-y-4">
-                            <p className="text-gray-600">Use your camera to instantly translate signs, menus, and more.</p>
+                            <p className="text-gray-600">Use your camera to instantly translate signs, menus, and more between Spanish and English.</p>
                             <Button size="lg" onClick={() => cameraInputRef.current?.click()} className="gap-2">
                                 <CameraIcon />
                                 Scan with Camera
