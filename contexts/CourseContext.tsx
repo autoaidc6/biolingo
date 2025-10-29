@@ -1,6 +1,8 @@
-import React, { createContext, useState, useEffect, ReactNode, useContext, useCallback } from 'react';
+import React, { createContext, useState, useEffect, ReactNode, useContext } from 'react';
 import { Course, Lesson } from '../types';
 import { MOCK_COURSES } from '../constants';
+import { supabase } from '../lib/supabaseClient';
+import { useAuth } from '../hooks/useAuth';
 
 interface CourseContextType {
   courses: Course[];
@@ -12,107 +14,57 @@ interface CourseContextType {
 
 export const CourseContext = createContext<CourseContextType | undefined>(undefined);
 
-const SYNC_QUEUE_KEY = 'biolingo_sync_queue';
-
 export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const { user } = useAuth();
 
-  const getSyncQueue = (): string[] => JSON.parse(localStorage.getItem(SYNC_QUEUE_KEY) || '[]');
-  const setSyncQueue = (queue: string[]) => localStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(queue));
-
-  const syncPendingCompletions = useCallback(async () => {
-    let queue = getSyncQueue();
-    if (queue.length === 0) return;
-
-    console.log(`Syncing ${queue.length} pending lesson completions...`);
-    
-    const lessonsToSync = [...queue]; // Create a copy to iterate over
-    let successfullySynced: string[] = [];
-
-    for (const lessonId of lessonsToSync) {
+  useEffect(() => {
+    const loadCourseData = async () => {
+      setIsLoading(true);
+      if (user) {
         try {
-            const response = await fetch('/api/complete-lesson', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ lessonId }),
-            });
-            if (response.ok) {
-                successfullySynced.push(lessonId);
-            } else {
-                console.error(`Failed to sync lesson ${lessonId}, server responded with ${response.status}`);
-                // Stop syncing if server has issues
-                break;
-            }
-        } catch (error) {
-            console.warn("Sync failed, device is likely offline. Will retry later.", error);
-            // Stop syncing if network request fails
-            break;
+          // Fetch completed lesson IDs for the current user
+          const { data: progress, error } = await supabase
+            .from('user_lesson_progress')
+            .select('lesson_id')
+            .eq('user_id', user.id);
+
+          if (error) {
+            console.error("Error fetching lesson progress:", error.message);
+            // Fallback to default courses if progress can't be fetched
+            setCourses(MOCK_COURSES);
+            return;
+          }
+
+          const completedIds = new Set(progress.map(p => p.lesson_id));
+          
+          // Merge the user's progress with the mock course data
+          const userCourses = MOCK_COURSES.map(course => ({
+            ...course,
+            lessons: course.lessons.map(lesson => ({
+              ...lesson,
+              completed: completedIds.has(lesson.id),
+            })),
+          }));
+          setCourses(userCourses);
+
+        } catch (err) {
+            console.error("An unexpected error occurred while loading courses:", err);
+            setCourses(MOCK_COURSES);
+        } finally {
+            setIsLoading(false);
         }
-    }
-
-    // Remove successfully synced items from the queue
-    if (successfullySynced.length > 0) {
-        const newQueue = getSyncQueue().filter(id => !successfullySynced.includes(id));
-        setSyncQueue(newQueue);
-        console.log(`Successfully synced ${successfullySynced.length} lessons.`);
-    }
-  }, []);
-
-  useEffect(() => {
-    // Listen to online/offline status changes
-    const goOnline = () => setIsOnline(true);
-    const goOffline = () => setIsOnline(false);
-
-    window.addEventListener('online', goOnline);
-    window.addEventListener('offline', goOffline);
-
-    return () => {
-        window.removeEventListener('online', goOnline);
-        window.removeEventListener('offline', goOffline);
-    };
-  }, []);
-
-  useEffect(() => {
-    // When app comes online, try to sync pending completions
-    if (isOnline) {
-        syncPendingCompletions();
-    }
-  }, [isOnline, syncPendingCompletions]);
-
-  useEffect(() => {
-    try {
-      const storedCourses = localStorage.getItem('biolingo_courses');
-      if (storedCourses) {
-        setCourses(JSON.parse(storedCourses));
       } else {
+        // No user logged in, show default course state (all incomplete)
         setCourses(MOCK_COURSES);
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Failed to parse courses from localStorage", error);
-      setCourses(MOCK_COURSES);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    // When courses are loaded, send them to the service worker for caching.
-    // This ensures lesson content is available offline.
-    if ('serviceWorker' in navigator && navigator.serviceWorker.controller && courses.length > 0) {
-        navigator.serviceWorker.controller.postMessage({
-            type: 'CACHE_LESSON_DATA',
-            payload: courses
-        });
-    }
-  }, [courses]);
+    };
+    
+    loadCourseData();
+  }, [user]); // Re-run this effect when the user logs in or out
   
-  const updateAndStoreCourses = (newCourses: Course[]) => {
-    setCourses(newCourses);
-    localStorage.setItem('biolingo_courses', JSON.stringify(newCourses));
-  }
-
   const getCourseById = (id: string): Course | undefined => {
     return courses.find(c => c.id === id);
   };
@@ -127,8 +79,14 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     return undefined;
   };
   
-  const completeLesson = (lessonId: string) => {
-    // 1. Update UI immediately for optimistic response
+  const completeLesson = async (lessonId: string) => {
+    if (!user) {
+      console.warn("Cannot complete lesson: no user is logged in.");
+      return;
+    }
+
+    const originalCourses = courses;
+    // 1. Update UI immediately for an optimistic response
     const newCourses = courses.map(course => ({
         ...course,
         lessons: course.lessons.map(lesson => {
@@ -138,21 +96,27 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
             return lesson;
         })
     }));
-    updateAndStoreCourses(newCourses);
+    setCourses(newCourses);
 
-    // 2. Add to sync queue
-    const queue = getSyncQueue();
-    if (!queue.includes(lessonId)) {
-        queue.push(lessonId);
-        setSyncQueue(queue);
-    }
-
-    // 3. Attempt to sync immediately if online
-    if (isOnline) {
-        syncPendingCompletions();
+    // 2. Persist the completion to Supabase
+    try {
+      const { error } = await supabase
+        .from('user_lesson_progress')
+        .insert({ user_id: user.id, lesson_id: lessonId });
+      
+      if (error) {
+        // If the insert fails (e.g., duplicate key), it's not a critical error
+        if (error.code !== '23505') {
+          throw error;
+        }
+      }
+    } catch (error) {
+        console.error("Failed to save lesson progress:", error);
+        // Revert UI on failure
+        setCourses(originalCourses);
+        alert("Could not save your progress. Please check your connection and try again.");
     }
   };
-
 
   const value = {
     courses,

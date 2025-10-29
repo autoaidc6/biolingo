@@ -1,71 +1,120 @@
-
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../types';
-import { MOCK_USER } from '../constants';
+import { supabase, getProfile, supabaseError } from '../lib/supabaseClient';
+import { Session } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
+  session: Session | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (name: string, email: string, password: string) => Promise<{ error: any }>;
   logout: () => void;
   isLoading: boolean;
-  updateLearningGoal: (goal: string) => void;
+  updateLearningGoal: (goal: string) => Promise<void>;
+  configError: string | null;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for user in localStorage to persist session
-    try {
-      const storedUser = localStorage.getItem('biolingo_user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-    } catch (error) {
-      console.error("Failed to parse user from localStorage", error);
-      localStorage.removeItem('biolingo_user');
-    } finally {
-      setIsLoading(false);
+    if (!supabase) {
+        setIsLoading(false);
+        return;
     }
+    // Check for an active session on initial load
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+        setSession(session);
+        if (session) {
+            const profile = await getProfile(session.user.id, session.user.email!, session.user.user_metadata);
+            setUser(profile);
+        }
+        setIsLoading(false);
+    });
+
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        setSession(session);
+        if (session) {
+            const profile = await getProfile(session.user.id, session.user.email!, session.user.user_metadata);
+            setUser(profile);
+        } else {
+            setUser(null);
+        }
+        // Set loading to false once we have a session or know there isn't one.
+        setIsLoading(false);
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (email: string, password: string) => {
-    // Mock API call
-    console.log(`Attempting login with ${email} and ${password}`);
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        const loggedInUser = MOCK_USER;
-        setUser(loggedInUser);
-        localStorage.setItem('biolingo_user', JSON.stringify(loggedInUser));
-        resolve();
-      }, 1000);
+    if (!supabase) return { error: { message: supabaseError } };
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error };
+  };
+
+  const signUp = async (name: string, email: string, password: string) => {
+    if (!supabase) return { error: { message: supabaseError } };
+    const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+            data: {
+                full_name: name,
+                // A Supabase trigger can use this metadata to create a public.profiles entry
+            },
+        },
     });
+    return { error };
   };
 
-  const logout = () => {
+  const logout = async () => {
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
     setUser(null);
-    localStorage.removeItem('biolingo_user');
   };
 
-  const updateLearningGoal = (goal: string) => {
-    if (user) {
+  const updateLearningGoal = async (goal: string) => {
+    if (user && supabase) {
       const updatedUser = { ...user, learningGoal: goal };
-      setUser(updatedUser);
-      localStorage.setItem('biolingo_user', JSON.stringify(updatedUser));
+      setUser(updatedUser); // Optimistic update
+      
+      const { error } = await supabase
+        .from('profiles')
+        .update({ learning_goal: goal })
+        .eq('id', user.id);
+
+      if (error) {
+        console.error("Error updating learning goal:", error);
+        // Revert on failure
+        setUser(user);
+        alert("Failed to update your learning goal. Please try again.");
+      }
     }
   };
 
   const value = {
     user,
-    isAuthenticated: !!user,
+    session,
+    isAuthenticated: !!session,
     login,
+    signUp,
     logout,
     isLoading,
     updateLearningGoal,
+    configError: supabaseError,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

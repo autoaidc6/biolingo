@@ -1,9 +1,11 @@
+
 import React from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+// FIX: Import `Variants` type from framer-motion to correctly type animation variants.
+import { motion, Variants } from 'framer-motion';
 import { FlameIcon, GemIcon, CheckCircleIcon, ArrowRightIcon } from '../components/ui/Icons';
 import { useCourses } from '../contexts/CourseContext';
 import { RecommendedLesson } from '../components/RecommendedLesson';
@@ -40,7 +42,8 @@ export const DashboardPage: React.FC = () => {
     }
   };
 
-  const itemVariants = {
+  // FIX: Explicitly type `itemVariants` with the `Variants` type to resolve TypeScript error with transition properties.
+  const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,

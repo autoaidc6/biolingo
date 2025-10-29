@@ -1,8 +1,10 @@
+
 import React from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
-import { motion } from 'framer-motion';
+// FIX: Import `Variants` type from framer-motion to correctly type animation variants.
+import { motion, Variants } from 'framer-motion';
 import { AwardIcon, FlameIcon, GemIcon, TargetIcon } from '../components/ui/Icons';
 
 // Mock achievements data
@@ -32,7 +34,8 @@ export const ProfilePage: React.FC = () => {
     },
   };
 
-  const itemVariants = {
+  // FIX: Explicitly type `itemVariants` with the `Variants` type to resolve TypeScript error with transition properties.
+  const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
@@ -48,7 +51,8 @@ export const ProfilePage: React.FC = () => {
     },
   };
 
-  const badgeVariants = {
+  // FIX: Explicitly type `badgeVariants` with the `Variants` type to resolve TypeScript error with transition properties.
+  const badgeVariants: Variants = {
     hidden: { opacity: 0, scale: 0.5 },
     visible: {
       opacity: 1,

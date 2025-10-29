@@ -19,42 +19,41 @@ export const Onboarding: React.FC = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const { login, signUp, configError } = useAuth();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleAuthAction = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await login(email, password);
-    // Loading state will be handled globally by App component
-  };
-  
-  const handleSignup = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    // Mock signup, then login
-    setTimeout(() => {
-        login(email, password);
-    }, 1000);
-  };
+    setError(null);
+    
+    const action = formState === 'login' 
+        ? () => login(email, password)
+        : () => signUp(name, email, password);
 
-  const handleGuestLogin = async () => {
-    setIsLoading(true);
-    await login('guest@biolingo.com', 'password');
-  };
+    const { error } = await action();
 
+    if (error) {
+      setError(error.message);
+      setIsLoading(false);
+    }
+    // On success, the AuthContext's onAuthStateChange will handle navigation.
+  };
 
   if (formState === 'login' || formState === 'signup') {
     return (
       <div className="min-h-screen bg-white flex flex-col justify-center p-6">
-        <button onClick={() => setFormState('welcome')} className="absolute top-4 left-4 text-gray-500 font-bold text-2xl" disabled={isLoading}>&times;</button>
+        <button onClick={() => { setFormState('welcome'); setError(null); }} className="absolute top-4 left-4 text-gray-500 font-bold text-2xl" disabled={isLoading}>&times;</button>
         <h2 className="text-2xl font-bold text-brand-text text-center mb-8">
             {formState === 'login' ? 'Log in to your account' : 'Create an account'}
         </h2>
-        <form onSubmit={formState === 'login' ? handleLogin : handleSignup} className="space-y-6">
-            {formState === 'signup' && <Input id="name" label="Name" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" />}
-            <Input id="email" label="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
-            <Input id="password" label="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" />
-            <Button type="submit" fullWidth disabled={isLoading}>
+        {error && <p className="bg-red-100 text-red-700 p-3 rounded-lg text-center mb-4">{error}</p>}
+        {configError && <p className="bg-yellow-100 text-yellow-800 p-3 rounded-lg text-center mb-4">{configError}</p>}
+        <form onSubmit={handleAuthAction} className="space-y-6">
+            {formState === 'signup' && <Input id="name" label="Name" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" required disabled={!!configError} />}
+            <Input id="email" label="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" required disabled={!!configError} />
+            <Input id="password" label="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required disabled={!!configError} />
+            <Button type="submit" fullWidth disabled={isLoading || !!configError}>
                 {isLoading ? 'Loading...' : formState === 'login' ? 'Log In' : 'Create Account'}
             </Button>
         </form>
@@ -70,11 +69,9 @@ export const Onboarding: React.FC = () => {
         <p className="text-gray-500 mt-2 text-lg">The fun, free way to learn a new language.</p>
       </div>
       <div className="p-6 space-y-3 bg-white">
-        <Button fullWidth onClick={() => setFormState('signup')} disabled={isLoading}>Get Started</Button>
-        <Button variant="outline" fullWidth onClick={() => setFormState('login')} disabled={isLoading}>I already have an account</Button>
-        <Button variant="ghost" fullWidth onClick={handleGuestLogin} disabled={isLoading}>
-          {isLoading ? 'Signing in...' : 'Continue as Guest'}
-        </Button>
+        {configError && <p className="text-yellow-800 bg-yellow-100 p-3 rounded-lg text-center text-sm mb-2">{configError}</p>}
+        <Button fullWidth onClick={() => setFormState('signup')} disabled={!!configError}>Get Started</Button>
+        <Button variant="outline" fullWidth onClick={() => setFormState('login')} disabled={!!configError}>I already have an account</Button>
       </div>
     </div>
   );
