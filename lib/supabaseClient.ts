@@ -2,8 +2,8 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { User } from '../types';
 
 // The user is expected to provide these environment variables.
-const supabaseUrl = 'https://kxteagdeldhcjagtarkv.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4dGVhZ2RlbGRoY2phZ3Rhcmt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE2ODY4ODYsImV4cCI6MjA3NzI2Mjg4Nn0.QJAOhuwXxAm1BaN-Ns_NLYuAH3gGzvg1sGR7k8UBrmE';
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
 let supabase: SupabaseClient | null = null;
 let supabaseError: string | null = null;

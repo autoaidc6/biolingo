@@ -14,15 +14,54 @@ interface CourseContextType {
 
 export const CourseContext = createContext<CourseContextType | undefined>(undefined);
 
+const applyProgressToCourses = (completedIds: Set<string>): Course[] => {
+    return MOCK_COURSES.map(course => ({
+        ...course,
+        lessons: course.lessons.map(lesson => ({
+            ...lesson,
+            completed: completedIds.has(lesson.id),
+        })),
+    }));
+};
+
 export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
 
+  const syncOfflineProgress = async () => {
+    if (!user || !navigator.onLine) return;
+    
+    const queue = JSON.parse(localStorage.getItem(`offline_queue_${user.id}`) || '[]');
+    if (queue.length === 0) return;
+
+    console.log(`Syncing ${queue.length} offline lesson completions.`);
+    
+    const itemsToSync = queue.map((lessonId: string) => ({
+      user_id: user.id,
+      lesson_id: lessonId,
+    }));
+
+    // FIX: The `upsert` option for `insert` is deprecated in Supabase v2. Use the dedicated `upsert()` method instead.
+    const { error } = await supabase.from('user_lesson_progress').upsert(itemsToSync);
+
+    if (error) {
+      console.error("Failed to sync offline progress:", error);
+    } else {
+      console.log("Offline progress synced successfully.");
+      localStorage.removeItem(`offline_queue_${user.id}`);
+    }
+  };
+
   useEffect(() => {
     const loadCourseData = async () => {
       setIsLoading(true);
       if (user) {
+        // Try to sync any pending changes first when the app loads and is online
+        if (navigator.onLine) {
+            await syncOfflineProgress();
+        }
+
         try {
           // Fetch completed lesson IDs for the current user
           const { data: progress, error } = await supabase
@@ -31,27 +70,25 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
             .eq('user_id', user.id);
 
           if (error) {
-            console.error("Error fetching lesson progress:", error.message);
-            // Fallback to default courses if progress can't be fetched
-            setCourses(MOCK_COURSES);
-            return;
+            throw error; // Let the catch block handle it
           }
 
           const completedIds = new Set(progress.map(p => p.lesson_id));
           
-          // Merge the user's progress with the mock course data
-          const userCourses = MOCK_COURSES.map(course => ({
-            ...course,
-            lessons: course.lessons.map(lesson => ({
-              ...lesson,
-              completed: completedIds.has(lesson.id),
-            })),
-          }));
+          // Save the fresh progress to local storage for offline use
+          localStorage.setItem(`progress_${user.id}`, JSON.stringify(Array.from(completedIds)));
+
+          const userCourses = applyProgressToCourses(completedIds);
           setCourses(userCourses);
 
         } catch (err) {
-            console.error("An unexpected error occurred while loading courses:", err);
-            setCourses(MOCK_COURSES);
+            console.warn("Failed to fetch progress, attempting to load from cache.", err);
+            // Load from localStorage as a fallback if fetching fails
+            const cachedProgress = localStorage.getItem(`progress_${user.id}`);
+            // FIX: JSON.parse returns `any`, so we must cast the result to `string[]` and explicitly type the empty Set to ensure `completedIds` is `Set<string>`.
+            const completedIds = cachedProgress ? new Set(JSON.parse(cachedProgress) as string[]) : new Set<string>();
+            const userCourses = applyProgressToCourses(completedIds);
+            setCourses(userCourses);
         } finally {
             setIsLoading(false);
         }
@@ -63,7 +100,14 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     };
     
     loadCourseData();
-  }, [user]); // Re-run this effect when the user logs in or out
+
+    // Add event listener for when the app comes back online
+    window.addEventListener('online', syncOfflineProgress);
+    return () => {
+        window.removeEventListener('online', syncOfflineProgress);
+    };
+
+  }, [user]);
   
   const getCourseById = (id: string): Course | undefined => {
     return courses.find(c => c.id === id);
@@ -82,6 +126,12 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const completeLesson = async (lessonId: string) => {
     if (!user) {
       console.warn("Cannot complete lesson: no user is logged in.");
+      // For a guest user, we can optimistically update UI without saving
+      const newCourses = courses.map(course => ({
+          ...course,
+          lessons: course.lessons.map(l => l.id === lessonId ? { ...l, completed: true } : l)
+      }));
+      setCourses(newCourses);
       return;
     }
 
@@ -98,23 +148,38 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }));
     setCourses(newCourses);
 
-    // 2. Persist the completion to Supabase
+    // Also update our local storage cache immediately
+    const cachedProgress = localStorage.getItem(`progress_${user.id}`);
+    // FIX: JSON.parse returns `any`, so we must cast the result to `string[]` and explicitly type the empty Set to ensure `completedIds` is `Set<string>`.
+    const completedIds = cachedProgress ? new Set(JSON.parse(cachedProgress) as string[]) : new Set<string>();
+    completedIds.add(lessonId);
+    localStorage.setItem(`progress_${user.id}`, JSON.stringify(Array.from(completedIds)));
+
+    // 2. Persist the completion to Supabase or queue if offline
     try {
       const { error } = await supabase
         .from('user_lesson_progress')
         .insert({ user_id: user.id, lesson_id: lessonId });
       
-      if (error) {
-        // If the insert fails (e.g., duplicate key), it's not a critical error
-        if (error.code !== '23505') {
+      if (error && error.code !== '23505') { // Ignore duplicate key errors
           throw error;
-        }
       }
     } catch (error) {
         console.error("Failed to save lesson progress:", error);
-        // Revert UI on failure
-        setCourses(originalCourses);
-        alert("Could not save your progress. Please check your connection and try again.");
+        // If offline, queue the completion instead of reverting
+        if (!navigator.onLine) {
+            console.log("App is offline. Queuing lesson completion.");
+            const queue = JSON.parse(localStorage.getItem(`offline_queue_${user.id}`) || '[]');
+            if (!queue.includes(lessonId)) {
+                queue.push(lessonId);
+                localStorage.setItem(`offline_queue_${user.id}`, JSON.stringify(queue));
+            }
+            // Do not revert UI, the optimistic update stands.
+        } else {
+            // Revert UI on failure if online
+            setCourses(originalCourses);
+            alert("Could not save your progress. Please check your connection and try again.");
+        }
     }
   };
 
