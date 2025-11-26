@@ -20,7 +20,7 @@ export const Onboarding: React.FC = () => {
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { login, signUp, configError } = useAuth();
+  const { login, signUp, configError, loginAsGuest } = useAuth();
 
   const handleAuthAction = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,12 +48,12 @@ export const Onboarding: React.FC = () => {
             {formState === 'login' ? 'Log in to your account' : 'Create an account'}
         </h2>
         {error && <p className="bg-red-100 text-red-700 p-3 rounded-lg text-center mb-4">{error}</p>}
-        {configError && <p className="bg-yellow-100 text-yellow-800 p-3 rounded-lg text-center mb-4">{configError}</p>}
+        {configError && <p className="bg-yellow-100 text-yellow-800 p-3 rounded-lg text-center mb-4 text-sm">Offline Mode: Database not configured.</p>}
         <form onSubmit={handleAuthAction} className="space-y-6">
-            {formState === 'signup' && <Input id="name" label="Name" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" required disabled={!!configError} />}
-            <Input id="email" label="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" required disabled={!!configError} />
-            <Input id="password" label="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required disabled={!!configError} />
-            <Button type="submit" fullWidth disabled={isLoading || !!configError}>
+            {formState === 'signup' && <Input id="name" label="Name" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" required disabled={false} />}
+            <Input id="email" label="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" required disabled={false} />
+            <Input id="password" label="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required disabled={false} />
+            <Button type="submit" fullWidth disabled={isLoading}>
                 {isLoading ? 'Loading...' : formState === 'login' ? 'Log In' : 'Create Account'}
             </Button>
         </form>
@@ -69,9 +69,14 @@ export const Onboarding: React.FC = () => {
         <p className="text-gray-500 mt-2 text-lg">The fun, free way to learn a new language.</p>
       </div>
       <div className="p-6 space-y-3 bg-white">
-        {configError && <p className="text-yellow-800 bg-yellow-100 p-3 rounded-lg text-center text-sm mb-2">{configError}</p>}
-        <Button fullWidth onClick={() => setFormState('signup')} disabled={!!configError}>Get Started</Button>
-        <Button variant="outline" fullWidth onClick={() => setFormState('login')} disabled={!!configError}>I already have an account</Button>
+        {configError && <p className="text-yellow-800 bg-yellow-100 p-3 rounded-lg text-center text-sm mb-2">Note: Running in Guest Mode (Offline)</p>}
+        <Button fullWidth onClick={() => setFormState('signup')}>Get Started</Button>
+        <Button variant="outline" fullWidth onClick={() => setFormState('login')}>I already have an account</Button>
+        <div className="mt-2 text-center">
+            <button onClick={loginAsGuest} className="text-gray-500 font-medium text-sm hover:text-brand-green underline py-2">
+                Continue as Guest
+            </button>
+        </div>
       </div>
     </div>
   );

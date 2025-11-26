@@ -30,7 +30,7 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const { user } = useAuth();
 
   const syncOfflineProgress = async () => {
-    if (!user || !navigator.onLine) return;
+    if (!user || !navigator.onLine || !supabase) return;
     
     const queue = JSON.parse(localStorage.getItem(`offline_queue_${user.id}`) || '[]');
     if (queue.length === 0) return;
@@ -42,7 +42,6 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       lesson_id: lessonId,
     }));
 
-    // FIX: The `upsert` option for `insert` is deprecated in Supabase v2. Use the dedicated `upsert()` method instead.
     const { error } = await supabase.from('user_lesson_progress').upsert(itemsToSync);
 
     if (error) {
@@ -63,6 +62,10 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         }
 
         try {
+          if (!supabase) {
+              throw new Error("Supabase not configured");
+          }
+
           // Fetch completed lesson IDs for the current user
           const { data: progress, error } = await supabase
             .from('user_lesson_progress')
@@ -83,8 +86,7 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
           setCourses(userCourses);
 
         } catch (err) {
-            console.warn("Failed to fetch progress, attempting to load from cache.", err);
-            // Load from localStorage as a fallback if fetching fails
+            // Fallback to local storage (Guest mode or Offline or Supabase missing)
             const cachedProgress = localStorage.getItem(`progress_${user.id}`);
             // FIX: JSON.parse returns `any`, so we must cast the result to `string[]` and explicitly type the empty Set to ensure `completedIds` is `Set<string>`.
             const completedIds = cachedProgress ? new Set(JSON.parse(cachedProgress) as string[]) : new Set<string>();
@@ -127,7 +129,7 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const completeLesson = async (lessonId: string) => {
     if (!user) {
       console.warn("Cannot complete lesson: no user is logged in.");
-      // For a guest user, we can optimistically update UI without saving
+      // For a guest user (unauthenticated), we can optimistically update UI
       const newCourses = courses.map(course => ({
           ...course,
           lessons: course.lessons.map(l => l.id === lessonId ? { ...l, completed: true } : l)
@@ -151,13 +153,16 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
     // Also update our local storage cache immediately
     const cachedProgress = localStorage.getItem(`progress_${user.id}`);
-    // FIX: JSON.parse returns `any`, so we must cast the result to `string[]` and explicitly type the empty Set to ensure `completedIds` is `Set<string>`.
     const completedIds = cachedProgress ? new Set(JSON.parse(cachedProgress) as string[]) : new Set<string>();
     completedIds.add(lessonId);
     localStorage.setItem(`progress_${user.id}`, JSON.stringify(Array.from(completedIds)));
 
     // 2. Persist the completion to Supabase or queue if offline
     try {
+      if (!supabase) {
+          throw new Error("Supabase not configured");
+      }
+
       const { error } = await supabase
         .from('user_lesson_progress')
         .insert({ user_id: user.id, lesson_id: lessonId });
@@ -166,18 +171,21 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
           throw error;
       }
     } catch (error) {
-        console.error("Failed to save lesson progress:", error);
-        // If offline, queue the completion instead of reverting
-        if (!navigator.onLine) {
+        // If offline or no supabase, queue is implicitly handled by local storage update above for session.
+        // But for sync logic, we can still use the queue.
+        if (!supabase) {
+            // Guest mode: Data is already saved to local storage "progress_{user.id}" above.
+            // We don't need to do anything else.
+        } else if (!navigator.onLine) {
             console.log("App is offline. Queuing lesson completion.");
             const queue = JSON.parse(localStorage.getItem(`offline_queue_${user.id}`) || '[]');
             if (!queue.includes(lessonId)) {
                 queue.push(lessonId);
                 localStorage.setItem(`offline_queue_${user.id}`, JSON.stringify(queue));
             }
-            // Do not revert UI, the optimistic update stands.
         } else {
-            // Revert UI on failure if online
+            // Revert UI on real failure if online and supabase exists
+            console.error("Failed to save lesson progress:", error);
             setCourses(originalCourses);
             alert("Could not save your progress. Please check your connection and try again.");
         }
