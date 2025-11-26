@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { GoogleGenAI, Chat } from '@google/genai';
-import { SpeakerIcon, MicrophoneIcon } from '../components/ui/Icons';
+import { SpeakerIcon, MicrophoneIcon, StopIcon } from '../components/ui/Icons';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 
 // Simple typing indicator component
@@ -76,7 +76,7 @@ export const ChatPage: React.FC = () => {
       }
     };
     initChat();
-    // Cleanup speech synthesis on component unmount
+    
     return () => {
         if (window.speechSynthesis) {
             window.speechSynthesis.cancel();
@@ -143,8 +143,8 @@ export const ChatPage: React.FC = () => {
     } else {
       const startVal = input;
       startListening((text) => {
-         // Append spoken text to what was already there
-         const separator = startVal && !startVal.endsWith(' ') ? ' ' : '';
+         // Append spoken text to what was already there, handling spaces intelligently
+         const separator = startVal && !startVal.endsWith(' ') && text ? ' ' : '';
          setInput(startVal + separator + text);
       });
     }
@@ -156,51 +156,56 @@ export const ChatPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-[85vh]">
-      <h1 className="text-3xl font-bold text-brand-text mb-4">Chat with Ustaza AI</h1>
-      <div style={chatAreaStyle} className="flex-grow bg-white border-2 border-brand-stroke rounded-2xl p-4 overflow-y-auto space-y-4">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-3xl font-bold text-brand-text">Chat with Ustaza AI</h1>
+      </div>
+      
+      <div style={chatAreaStyle} className="flex-grow bg-white border-2 border-brand-stroke rounded-2xl p-4 overflow-y-auto space-y-4 shadow-inner">
         {messages.map((msg) => (
           <div key={msg.id} className={`flex items-end gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.sender === 'bot' && msg.text && (
-                 <button onClick={() => speak(msg.text)} title="Read aloud" className="p-1 text-gray-400 hover:text-brand-blue transition-colors self-center">
+                 <button onClick={() => speak(msg.text)} title="Read aloud" className="p-1 text-gray-400 hover:text-brand-blue transition-colors self-center flex-shrink-0">
                      <SpeakerIcon className="w-5 h-5"/>
                  </button>
             )}
-            <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-sm ${msg.sender === 'user' ? 'bg-brand-blue text-white rounded-br-lg' : 'bg-gray-100 text-brand-text rounded-bl-lg'}`}>
+            <div className={`max-w-[85%] lg:max-w-md px-4 py-3 rounded-2xl shadow-sm ${msg.sender === 'user' ? 'bg-brand-blue text-white rounded-br-lg' : 'bg-gray-100 text-brand-text rounded-bl-lg'}`}>
               {msg.text === '' && msg.sender === 'bot' ? <TypingIndicator /> : <p className="whitespace-pre-wrap">{msg.text}</p>}
             </div>
           </div>
         ))}
         <div ref={messagesEndRef} />
       </div>
+
       <div className="mt-4 flex gap-2 items-end">
         {isSupported && (
             <div className="flex flex-col gap-1 pb-0.5">
-                 <div className="flex bg-white border-2 border-brand-stroke rounded-xl overflow-hidden h-[54px]">
+                 <div className={`flex bg-white border-2 rounded-xl overflow-hidden h-[54px] transition-colors ${isListening ? 'border-red-400 ring-2 ring-red-100' : 'border-brand-stroke'}`}>
                      <button 
                         className="px-2 text-xs font-bold bg-gray-50 border-r border-brand-stroke text-gray-500 hover:text-brand-blue" 
                         onClick={toggleMicLang}
-                        title="Switch Language"
+                        title="Switch Input Language"
                      >
                         {micLang === 'es-ES' ? 'ES' : 'EN'}
                      </button>
                      <button 
-                        className={`px-3 flex items-center justify-center transition-colors ${isListening ? 'bg-red-100 text-red-500' : 'hover:bg-gray-50 text-gray-500'}`} 
+                        className={`px-3 flex items-center justify-center transition-colors ${isListening ? 'bg-red-50 text-red-500' : 'hover:bg-gray-50 text-gray-500 hover:text-brand-blue'}`} 
                         onClick={handleMicClick}
                         title={isListening ? "Stop listening" : "Start speaking"}
                      >
-                        <MicrophoneIcon className={`w-6 h-6 ${isListening ? 'animate-pulse' : ''}`} />
+                        {isListening ? <StopIcon className="w-5 h-5 animate-pulse" /> : <MicrophoneIcon className="w-6 h-6" />}
                      </button>
                  </div>
             </div>
         )}
-        <div className="flex-grow">
+        <div className="flex-grow relative">
             <Input 
                 value={input} 
                 onChange={(e) => setInput(e.target.value)} 
-                placeholder={isListening ? "Listening..." : "Type your question..."}
+                placeholder={isListening ? "Listening..." : "Type your message..."}
                 onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSend()}
                 disabled={isLoading || !chat}
                 aria-label="Chat input"
+                className={isListening ? "ring-2 ring-red-100 border-red-300 placeholder-red-300" : ""}
             />
         </div>
         <div className="h-[54px]">

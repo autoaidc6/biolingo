@@ -10,10 +10,14 @@ export const useSpeechRecognition = (language: string = 'es-ES') => {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
         setIsSupported(true);
-        recognitionRef.current = new SpeechRecognition();
-        recognitionRef.current.continuous = false; // Stop after a single phrase for chat-like interaction
-        recognitionRef.current.interimResults = true; // Show results in real-time
-        recognitionRef.current.lang = language;
+        try {
+            recognitionRef.current = new SpeechRecognition();
+            recognitionRef.current.continuous = false; // Capture one phrase at a time for better chat UX
+            recognitionRef.current.interimResults = true; // Show results as they are spoken
+            recognitionRef.current.lang = language;
+        } catch (e) {
+            console.error("Failed to initialize SpeechRecognition:", e);
+        }
       }
     }
   }, []);
@@ -27,16 +31,11 @@ export const useSpeechRecognition = (language: string = 'es-ES') => {
   const startListening = useCallback((onResult: (text: string) => void) => {
     if (!recognitionRef.current) return;
     
-    // Stop any existing session
-    try {
-        recognitionRef.current.stop();
-    } catch(e) {
-        // Ignore error if not running
-    }
+    // Prevent starting if already active
+    if (isListening) return;
 
+    // Reset handlers to current context
     recognitionRef.current.onstart = () => setIsListening(true);
-    
-    // When the speech recognition service stops (either automatically or manually)
     recognitionRef.current.onend = () => setIsListening(false);
     
     recognitionRef.current.onresult = (event: any) => {
@@ -60,7 +59,7 @@ export const useSpeechRecognition = (language: string = 'es-ES') => {
     recognitionRef.current.onerror = (event: any) => {
         console.error("Speech recognition error", event.error);
         if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-            alert("Microphone access blocked. Please enable permissions.");
+            alert("Microphone access blocked. Please allow microphone permissions.");
         }
         setIsListening(false);
     };
@@ -71,7 +70,7 @@ export const useSpeechRecognition = (language: string = 'es-ES') => {
         console.error("Could not start recognition", e);
         setIsListening(false);
     }
-  }, []);
+  }, [isListening]);
 
   const stopListening = useCallback(() => {
     if (recognitionRef.current) {

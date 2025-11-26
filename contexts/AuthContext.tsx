@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { User } from '../types';
 import { supabase, getProfile, supabaseError } from '../lib/supabaseClient';
 import { Session } from '@supabase/supabase-js';
@@ -21,6 +21,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const userIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -39,12 +40,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             console.warn("Error getting session:", error.message);
         }
 
-        if (mounted) {
+        if (mounted && initialSession) {
             setSession(initialSession);
-            if (initialSession) {
-                const profile = await getProfile(initialSession.user.id, initialSession.user.email!, initialSession.user.user_metadata);
-                if (mounted) setUser(profile);
-            }
+            userIdRef.current = initialSession.user.id;
+            const profile = await getProfile(initialSession.user.id, initialSession.user.email!, initialSession.user.user_metadata);
+            if (mounted) setUser(profile);
         }
       } catch (err) {
         console.error("Unexpected error during auth initialization:", err);
@@ -57,24 +57,41 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase 
-        ? supabase.auth.onAuthStateChange(async (_event, newSession) => {
+        ? supabase.auth.onAuthStateChange(async (event, newSession) => {
             if (!mounted) return;
             
+            // Ignore token refresh events for UI updates to prevent reloading profile
+            if (event === 'TOKEN_REFRESHED') {
+                setSession(newSession);
+                return;
+            }
+
             setSession(newSession);
             
             if (newSession) {
-                // Only fetch profile if the user ID has changed or we don't have a user yet
-                if (!user || user.id !== newSession.user.id) {
-                    setIsLoading(true); // Show loading while switching users
-                    const profile = await getProfile(newSession.user.id, newSession.user.email!, newSession.user.user_metadata);
-                    if (mounted) {
-                        setUser(profile);
-                        setIsLoading(false);
+                // Only fetch profile if the user ID has actually changed
+                if (newSession.user.id !== userIdRef.current) {
+                    setIsLoading(true); 
+                    userIdRef.current = newSession.user.id;
+
+                    try {
+                        const profile = await getProfile(newSession.user.id, newSession.user.email!, newSession.user.user_metadata);
+                        if (mounted) {
+                            setUser(profile);
+                        }
+                    } catch (err) {
+                        console.error("Error fetching profile on auth change:", err);
+                    } finally {
+                        if (mounted) setIsLoading(false);
                     }
                 }
             } else {
-                setUser(null);
-                setIsLoading(false);
+                // User signed out
+                if (mounted) {
+                    setUser(null);
+                    userIdRef.current = null;
+                    setIsLoading(false);
+                }
             }
           })
         : { data: { subscription: { unsubscribe: () => {} } } };
@@ -83,7 +100,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []); // Remove user dependency to avoid loop
+  }, []);
 
   const login = async (email: string, password: string) => {
     if (!supabase) return { error: { message: supabaseError } };
@@ -111,6 +128,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     setUser(null);
     setSession(null);
+    userIdRef.current = null;
   };
 
   const updateLearningGoal = async (goal: string) => {
