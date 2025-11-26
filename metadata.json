@@ -2,6 +2,7 @@
   "name": "Biolingo",
   "description": "A mobile-first web app for learning languages in a fun, gamified way, inspired by Duolingo. It includes courses, lessons, and a chat feature to make learning interactive and engaging.",
   "requestFramePermissions": [
-    "camera"
+    "camera",
+    "microphone"
   ]
 }

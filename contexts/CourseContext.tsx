@@ -73,7 +73,8 @@ export const CourseProvider: React.FC<{ children: ReactNode }> = ({ children }) 
             throw error; // Let the catch block handle it
           }
 
-          const completedIds = new Set(progress.map(p => p.lesson_id));
+          // FIX: Explicitly cast the data to avoid Set<unknown> error.
+          const completedIds = new Set((progress as any[] || []).map((p: any) => p.lesson_id as string));
           
           // Save the fresh progress to local storage for offline use
           localStorage.setItem(`progress_${user.id}`, JSON.stringify(Array.from(completedIds)));

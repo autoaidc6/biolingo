@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { GoogleGenAI, Chat } from '@google/genai';
-import { SpeakerIcon } from '../components/ui/Icons';
+import { SpeakerIcon, MicrophoneIcon } from '../components/ui/Icons';
+import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 
 // Simple typing indicator component
 const TypingIndicator = () => (
@@ -38,7 +39,10 @@ export const ChatPage: React.FC = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [chat, setChat] = useState<Chat | null>(null);
+  const [micLang, setMicLang] = useState('es-ES');
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { isListening, isSupported, startListening, stopListening } = useSpeechRecognition(micLang);
 
   useEffect(() => {
     const initChat = () => {
@@ -133,6 +137,23 @@ export const ChatPage: React.FC = () => {
     }
   };
 
+  const handleMicClick = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      const startVal = input;
+      startListening((text) => {
+         // Append spoken text to what was already there
+         const separator = startVal && !startVal.endsWith(' ') ? ' ' : '';
+         setInput(startVal + separator + text);
+      });
+    }
+  };
+
+  const toggleMicLang = () => {
+    setMicLang(prev => prev === 'es-ES' ? 'en-US' : 'es-ES');
+  };
+
   return (
     <div className="flex flex-col h-[85vh]">
       <h1 className="text-3xl font-bold text-brand-text mb-4">Chat with Ustaza AI</h1>
@@ -151,18 +172,42 @@ export const ChatPage: React.FC = () => {
         ))}
         <div ref={messagesEndRef} />
       </div>
-      <div className="mt-4 flex gap-2">
-        <Input 
-          value={input} 
-          onChange={(e) => setInput(e.target.value)} 
-          placeholder="Type your question..." 
-          onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSend()}
-          disabled={isLoading || !chat}
-          aria-label="Chat input"
-        />
-        <Button onClick={handleSend} size="md" disabled={isLoading || !chat}>
-            {isLoading ? '...' : 'Send'}
-        </Button>
+      <div className="mt-4 flex gap-2 items-end">
+        {isSupported && (
+            <div className="flex flex-col gap-1 pb-0.5">
+                 <div className="flex bg-white border-2 border-brand-stroke rounded-xl overflow-hidden h-[54px]">
+                     <button 
+                        className="px-2 text-xs font-bold bg-gray-50 border-r border-brand-stroke text-gray-500 hover:text-brand-blue" 
+                        onClick={toggleMicLang}
+                        title="Switch Language"
+                     >
+                        {micLang === 'es-ES' ? 'ES' : 'EN'}
+                     </button>
+                     <button 
+                        className={`px-3 flex items-center justify-center transition-colors ${isListening ? 'bg-red-100 text-red-500' : 'hover:bg-gray-50 text-gray-500'}`} 
+                        onClick={handleMicClick}
+                        title={isListening ? "Stop listening" : "Start speaking"}
+                     >
+                        <MicrophoneIcon className={`w-6 h-6 ${isListening ? 'animate-pulse' : ''}`} />
+                     </button>
+                 </div>
+            </div>
+        )}
+        <div className="flex-grow">
+            <Input 
+                value={input} 
+                onChange={(e) => setInput(e.target.value)} 
+                placeholder={isListening ? "Listening..." : "Type your question..."}
+                onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSend()}
+                disabled={isLoading || !chat}
+                aria-label="Chat input"
+            />
+        </div>
+        <div className="h-[54px]">
+            <Button onClick={handleSend} size="md" disabled={isLoading || !chat} className="h-full">
+                {isLoading ? '...' : 'Send'}
+            </Button>
+        </div>
       </div>
     </div>
   );

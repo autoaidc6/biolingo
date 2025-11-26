@@ -23,40 +23,67 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!supabase) {
-        setIsLoading(false);
-        return;
-    }
-    // Check for an active session on initial load
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-        setSession(session);
-        if (session) {
-            const profile = await getProfile(session.user.id, session.user.email!, session.user.user_metadata);
-            setUser(profile);
-        }
-        setIsLoading(false);
-    });
+    let mounted = true;
 
+    const initializeAuth = async () => {
+      if (!supabase) {
+        if (mounted) setIsLoading(false);
+        return;
+      }
+
+      try {
+        // Check for an active session on initial load
+        const { data: { session: initialSession }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+            console.warn("Error getting session:", error.message);
+        }
+
+        if (mounted) {
+            setSession(initialSession);
+            if (initialSession) {
+                const profile = await getProfile(initialSession.user.id, initialSession.user.email!, initialSession.user.user_metadata);
+                if (mounted) setUser(profile);
+            }
+        }
+      } catch (err) {
+        console.error("Unexpected error during auth initialization:", err);
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
+    };
+
+    initializeAuth();
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        if (session) {
-            const profile = await getProfile(session.user.id, session.user.email!, session.user.user_metadata);
-            setUser(profile);
-        } else {
-            setUser(null);
-        }
-        // Set loading to false once we have a session or know there isn't one.
-        setIsLoading(false);
-      }
-    );
+    const { data: { subscription } } = supabase 
+        ? supabase.auth.onAuthStateChange(async (_event, newSession) => {
+            if (!mounted) return;
+            
+            setSession(newSession);
+            
+            if (newSession) {
+                // Only fetch profile if the user ID has changed or we don't have a user yet
+                if (!user || user.id !== newSession.user.id) {
+                    setIsLoading(true); // Show loading while switching users
+                    const profile = await getProfile(newSession.user.id, newSession.user.email!, newSession.user.user_metadata);
+                    if (mounted) {
+                        setUser(profile);
+                        setIsLoading(false);
+                    }
+                }
+            } else {
+                setUser(null);
+                setIsLoading(false);
+            }
+          })
+        : { data: { subscription: { unsubscribe: () => {} } } };
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, []); // Remove user dependency to avoid loop
 
   const login = async (email: string, password: string) => {
     if (!supabase) return { error: { message: supabaseError } };
@@ -72,7 +99,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         options: {
             data: {
                 full_name: name,
-                // A Supabase trigger can use this metadata to create a public.profiles entry
             },
         },
     });
@@ -84,6 +110,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       await supabase.auth.signOut();
     }
     setUser(null);
+    setSession(null);
   };
 
   const updateLearningGoal = async (goal: string) => {
