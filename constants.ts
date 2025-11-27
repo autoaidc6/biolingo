@@ -1,3 +1,4 @@
+
 import { Course, User, LessonType } from './types';
 
 export const MOCK_USER: User = {
@@ -273,4 +274,123 @@ export const MOCK_COURSES: Course[] = [
       },
     ],
   },
+  {
+    id: 'spanish-reading-club',
+    title: 'Spanish Reading Club',
+    description: 'Immerse yourself in engaging short stories designed for learners.',
+    icon: '📖',
+    color: 'bg-orange-100',
+    lessons: [
+      {
+        id: 'src1',
+        title: 'El Gato Músico',
+        type: LessonType.READING,
+        completed: false,
+        content: [
+            "Había una vez un gato que quería ser músico.",
+            "Todos los días, practicaba con su guitarra en el tejado.",
+            "Los vecinos no estaban contentos con el ruido.",
+            "Pero el gato no se rendía, quería ser una estrella de rock.",
+            "Al final, los vecinos empezaron a bailar con su música."
+        ]
+      },
+      {
+        id: 'src2',
+        title: 'Story Comprehension',
+        type: LessonType.QUIZ,
+        completed: false,
+        content: [
+            { question: "What instrument did the cat play?", options: ["Piano", "Guitar", "Drums", "Violin"], correctAnswer: "Guitar" },
+            { question: "Where did the cat practice?", options: ["In the park", "In the kitchen", "On the roof", "In the basement"], correctAnswer: "On the roof" },
+        ]
+      },
+      {
+        id: 'src3',
+        title: 'A Day at the Beach',
+        type: LessonType.READING,
+        completed: false,
+        content: [
+            "Elena y su familia van a la playa.",
+            "Hace mucho sol y el agua está perfecta.",
+            "Elena construye un castillo de arena gigante.",
+            "Su hermano, Tomás, nada en el mar con los peces.",
+            "Comen helado de fresa y disfrutan del día."
+        ]
+      },
+      {
+        id: 'src4',
+        title: 'Beach Vocabulary',
+        type: LessonType.MATCHING,
+        completed: false,
+        content: [
+            { id: 1, term: "La playa", definition: "The beach" },
+            { id: 2, term: "El castillo de arena", definition: "Sandcastle" },
+            { id: 3, term: "Nadar", definition: "To swim" },
+            { id: 4, term: "El helado", definition: "Ice cream" },
+            { id: 5, term: "El sol", definition: "The sun" },
+        ]
+      }
+    ]
+  },
+  {
+    id: 'listening-lab',
+    title: 'Listening Lab',
+    description: 'Sharpen your ears with focused listening exercises and dialogues.',
+    icon: '👂',
+    color: 'bg-indigo-100',
+    lessons: [
+      {
+        id: 'll1',
+        title: 'Interview: Daily Routine',
+        type: LessonType.READING,
+        completed: false,
+        content: [
+            "Listen to this interview about daily routines.",
+            "Entrevistador: ¿A qué hora te levantas normalmente?",
+            "Ana: Me levanto a las siete de la mañana.",
+            "Entrevistador: ¿Y qué haces después?",
+            "Ana: Desayuno café y tostadas, y luego voy al trabajo.",
+            "Entrevistador: ¿Te gusta tu trabajo?",
+            "Ana: Sí, es muy interesante, pero a veces es cansado."
+        ]
+      },
+      {
+        id: 'll2',
+        title: 'Check Comprehension',
+        type: LessonType.QUIZ,
+        completed: false,
+        content: [
+            { question: "What time does Ana get up?", options: ["6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM"], correctAnswer: "7:00 AM" },
+            { question: "What does she have for breakfast?", options: ["Cereal", "Eggs", "Coffee and toast", "Fruit"], correctAnswer: "Coffee and toast" },
+        ]
+      },
+      {
+        id: 'll3',
+        title: 'Weather Report',
+        type: LessonType.READING,
+        completed: false,
+        content: [
+            "Listen to the weather forecast.",
+            "Locutor: Hoy tendremos un día soleado en todo el país.",
+            "Las temperaturas subirán hasta los 25 grados.",
+            "No olviden sus gafas de sol.",
+            "Por la noche, refrescará un poco, así que lleven una chaqueta.",
+            "Mañana se esperan algunas lluvias por la tarde."
+        ]
+      },
+      {
+        id: 'll4',
+        title: 'Weather Terms',
+        type: LessonType.MATCHING,
+        completed: false,
+        content: [
+            { id: 1, term: "Soleado", definition: "Sunny" },
+            { id: 2, term: "Lluvias", definition: "Rains" },
+            { id: 3, term: "Temperaturas", definition: "Temperatures" },
+            { id: 4, term: "Gafas de sol", definition: "Sunglasses" },
+            { id: 5, term: "Chaqueta", definition: "Jacket" },
+        ]
+      }
+    ]
+  }
 ];
