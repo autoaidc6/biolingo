@@ -1,0 +1,10 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#58CC02"/>
+  <g transform="translate(480, 150) scale(10)">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" fill="white"/>
+    <path d="M12 7c-2 0-3 1-3.5 2.5C8 11 9 12 11 12h2c2 0 3-1 3-2.5S14 7 12 7z" fill="#58CC02"/>
+    <path d="M12 17c2 0 3-1 3.5-2.5C16 13 15 12 13 12h-2c-2 0-3 1-3 2.5S10 17 12 17z" fill="#58CC02"/>
+  </g>
+  <text x="600" y="500" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="80" fill="white" letter-spacing="2">BIOLINGO</text>
+  <text x="600" y="560" text-anchor="middle" font-family="sans-serif" font-weight="500" font-size="30" fill="white" opacity="0.9">The fun, free way to learn languages</text>
+</svg>

@@ -57,7 +57,7 @@ export const Onboarding: React.FC = () => {
     <div className="min-h-screen bg-white flex flex-col bg-gradient-to-b from-green-50 via-white to-white">
       <div className="flex-grow flex flex-col items-center justify-center text-center px-6">
         <img 
-            src="/images/biolingo.png" 
+            src="/images/biolingo.svg" 
             alt="Biolingo Logo" 
             className="w-32 h-32 object-contain mb-4 drop-shadow-sm"
         />
