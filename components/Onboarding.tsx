@@ -3,14 +3,6 @@ import { useAuth } from '../hooks/useAuth';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 
-const LogoIcon = () => (
-    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" fill="#58CC02"/>
-        <path d="M12 7c-2 0-3 1-3.5 2.5C8 11 9 12 11 12h2c2 0 3-1 3-2.5S14 7 12 7z" fill="white"/>
-        <path d="M12 17c2 0 3-1 3.5-2.5C16 13 15 12 13 12h-2c-2 0-3 1-3 2.5S10 17 12 17z" fill="white"/>
-    </svg>
-);
-
 type OnboardingState = 'welcome' | 'login' | 'signup';
 
 export const Onboarding: React.FC = () => {
@@ -64,7 +56,11 @@ export const Onboarding: React.FC = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col bg-gradient-to-b from-green-50 via-white to-white">
       <div className="flex-grow flex flex-col items-center justify-center text-center px-6">
-        <LogoIcon />
+        <img 
+            src="/images/biolingo.png" 
+            alt="Biolingo Logo" 
+            className="w-32 h-32 object-contain mb-4 drop-shadow-sm"
+        />
         <h1 className="text-4xl font-extrabold text-brand-text mt-4">Welcome to Biolingo!</h1>
         <p className="text-gray-500 mt-2 text-lg">The fun, free way to learn a new language.</p>
       </div>
