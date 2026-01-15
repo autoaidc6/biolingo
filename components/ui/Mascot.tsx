@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion, Variants } from 'framer-motion';
 
@@ -17,18 +16,17 @@ export const Mascot: React.FC<MascotProps> = ({
   size = 120,
   showBubble
 }) => {
-  // Enhanced Color Palette using brand design tokens
+  // Enhanced Color Palette using new brand tokens
   const colors = {
-    body: '#76D7C4', // Mint/Teal
-    bodyDark: '#5DADE2', // Belly/Shadow
-    gill: '#FF8A80', // Pinkish Coral
-    eye: '#1C2833',
+    body: '#22D3EE', // Cyan 400
+    bodyDark: '#0891B2', // Cyan 600
+    gill: '#F472B6', // Pink 400
+    eye: '#0F172A', // Slate 900
     scarfWhite: '#FFFFFF',
-    scarfBlue: '#1CB0F6', // brand-blue
-    blush: '#FF8A80'
+    scarfBlue: '#6366F1', // Indigo 500
+    blush: '#FDA4AF'  // Rose 300
   };
 
-  // Fix: Explicitly type `mascotVariants` with the `Variants` type to resolve TypeScript error on line 67.
   const mascotVariants: Variants = {
     idle: { y: [0, -6, 0], transition: { duration: 3, repeat: Infinity, ease: "easeInOut" } },
     thinking: { scale: [1, 1.05, 1], rotate: [-2, 2, -2], transition: { duration: 2, repeat: Infinity } },
@@ -66,8 +64,6 @@ export const Mascot: React.FC<MascotProps> = ({
       <motion.svg
         viewBox="0 0 200 200"
         className="w-full h-full drop-shadow-lg"
-        // Fix: Use the mascotVariants map correctly by providing the entire map to `variants` 
-        // and picking the active variant name in the `animate` prop.
         variants={mascotVariants}
         animate={expression in mascotVariants ? expression : 'idle'}
       >
@@ -83,7 +79,7 @@ export const Mascot: React.FC<MascotProps> = ({
         {/* Body/Head */}
         <ellipse cx="100" cy="110" rx="65" ry="58" fill={colors.body} />
         
-        {/* Scarf with brand-blue */}
+        {/* Scarf with brand-blue (Indigo) */}
         <path d="M45 135 Q100 165 155 135 L145 155 Q100 185 55 155 Z" fill={colors.scarfWhite} />
         <path d="M65 145 L80 155 M100 156 L120 152 M140 145 L135 155" stroke={colors.scarfBlue} strokeWidth="8" strokeLinecap="round" />
 

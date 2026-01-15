@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export const SplashScreen: React.FC = () => {
   return (
-    <div className="fixed inset-0 bg-brand-green flex flex-col items-center justify-center z-50 animate-fadeOut">
+    <div className="fixed inset-0 bg-brand-purple flex flex-col items-center justify-center z-50 animate-fadeOut">
       <style>{`
         @keyframes fadeOut {
           0% { opacity: 1; }

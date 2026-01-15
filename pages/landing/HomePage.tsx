@@ -24,7 +24,7 @@ export const HomePage: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-xl text-gray-500 mt-8 font-medium leading-relaxed max-w-lg mx-auto md:mx-0"
+              className="text-xl text-slate-500 mt-8 font-medium leading-relaxed max-w-lg mx-auto md:mx-0"
             >
               Learn Spanish naturally with our interactive lessons, authentic dialogues, and personalized learning paths.
             </motion.p>
@@ -39,9 +39,9 @@ export const HomePage: React.FC = () => {
               </Link>
               <div className="flex items-center gap-4 px-2">
                 <div className="flex -space-x-2">
-                   {[1,2,3].map(i => <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-gray-200" />)}
+                   {[1,2,3].map(i => <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200" />)}
                 </div>
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">60+ Lessons Available</span>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">60+ Lessons Available</span>
               </div>
             </motion.div>
           </div>
@@ -65,7 +65,7 @@ export const HomePage: React.FC = () => {
       <section className="bg-brand-snow py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-black text-brand-text mb-6">Ready to start your journey?</h2>
-            <p className="text-lg text-gray-500 font-bold mb-10">Join Ustaza and master Spanish today.</p>
+            <p className="text-lg text-slate-500 font-bold mb-10">Join Ustaza and master Spanish today.</p>
             <Link to="/login">
                <Button size="lg" className="px-12">Create Free Account</Button>
             </Link>
