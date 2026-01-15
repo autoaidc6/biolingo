@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
+import { Mascot } from './ui/Mascot';
 
 type OnboardingState = 'welcome' | 'login' | 'signup';
 
@@ -29,13 +30,15 @@ export const Onboarding: React.FC = () => {
       setError(error.message);
       setIsLoading(false);
     }
-    // On success, the AuthContext's onAuthStateChange will handle navigation.
   };
 
   if (formState === 'login' || formState === 'signup') {
     return (
       <div className="min-h-screen bg-white flex flex-col justify-center p-6">
         <button onClick={() => { setFormState('welcome'); setError(null); }} className="absolute top-4 left-4 text-gray-500 font-bold text-2xl" disabled={isLoading}>&times;</button>
+        <div className="flex justify-center mb-6">
+           <Mascot size={100} expression="thinking" />
+        </div>
         <h2 className="text-2xl font-bold text-brand-text text-center mb-8">
             {formState === 'login' ? 'Log in to your account' : 'Create an account'}
         </h2>
@@ -56,13 +59,9 @@ export const Onboarding: React.FC = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col bg-gradient-to-b from-green-50 via-white to-white">
       <div className="flex-grow flex flex-col items-center justify-center text-center px-6">
-        <img 
-            src="/images/biolingo.svg" 
-            alt="Biolingo Logo" 
-            className="w-32 h-32 object-contain mb-4 drop-shadow-sm"
-        />
-        <h1 className="text-4xl font-extrabold text-brand-text mt-4">Welcome to Biolingo!</h1>
-        <p className="text-gray-500 mt-2 text-lg">The fun, free way to learn a new language.</p>
+        <Mascot size={180} showBubble="Welcome back!" />
+        <h1 className="text-4xl font-extrabold text-brand-text mt-8">Learn with Ustaza!</h1>
+        <p className="text-gray-500 mt-2 text-lg">The fun, free way to master Spanish.</p>
       </div>
       <div className="p-6 space-y-3 bg-white">
         {configError && <p className="text-yellow-800 bg-yellow-100 p-3 rounded-lg text-center text-sm mb-2">Note: Running in Guest Mode (Offline)</p>}
