@@ -1,72 +1,34 @@
-
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 const navItems = [
-  { path: '/dashboard', label: 'Learn', icon: (active: boolean) => <HomeIcon active={active} /> },
-  // FIX: The CameraIcon was previously imported and did not support the `active` prop. 
-  // It is now defined locally to match the other icons in this component.
-  { path: '/scan', label: 'Scan', icon: (active: boolean) => <CameraIcon active={active} /> },
-  { path: '/chat', label: 'Chat', icon: (active: boolean) => <ChatBubbleIcon active={active} /> },
-  { path: '/profile', label: 'Profile', icon: (active: boolean) => <UserIcon active={active} /> },
+  { path: '/dashboard', label: 'Home', icon: '🏠' },
+  { path: '/learn', label: 'Learn', icon: '📖' },
+  { path: '/chat', label: 'Chat', icon: '💬' },
+  { path: '/scan', label: 'Scan', icon: '📸' },
+  { path: '/profile', label: 'Profile', icon: '👤' },
 ];
 
-const NavItem: React.FC<{ path: string; label: string; icon: (active: boolean) => React.ReactNode }> = ({ path, label, icon }) => (
+const NavItem: React.FC<{ path: string; label: string; icon: string }> = ({ path, label, icon }) => (
   <NavLink
     to={path}
     className={({ isActive }) =>
-      `flex flex-col items-center justify-center w-full pt-2 pb-1 transition-colors duration-200 ${isActive ? 'text-brand-blue' : 'text-gray-400 hover:text-brand-blue'
+      `flex flex-col items-center justify-center w-full pt-3 pb-2 transition-colors duration-200 border-t-2 ${
+        isActive ? 'text-brand-purple border-brand-purple' : 'text-gray-400 border-transparent hover:text-brand-purple'
       }`
     }
   >
-    {({ isActive }) => (
-      <>
-        {icon(isActive)}
-        <span className="text-xs font-bold mt-1">{label}</span>
-      </>
-    )}
+    <span className="text-2xl">{icon}</span>
+    <span className="text-[10px] font-bold uppercase tracking-widest mt-1">{label}</span>
   </NavLink>
 );
 
 export const BottomNav: React.FC = () => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 h-20 bg-white border-t-2 border-brand-stroke z-50 flex">
+    <nav className="fixed bottom-0 left-0 right-0 h-20 bg-white border-t border-brand-stroke z-50 flex shadow-lg px-2">
       {navItems.map((item) => (
         <NavItem key={item.path} {...item} />
       ))}
     </nav>
   );
 };
-
-// SVG Icons
-const HomeIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill={active ? 'currentColor' : 'none'} strokeLinecap="round" strokeLinejoin="round">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <polyline points="5 12 3 12 12 3 21 12 19 12" />
-    <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
-    <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
-  </svg>
-);
-
-// FIX: Define CameraIcon locally to support the `active` prop for fill color, consistent with other nav icons.
-const CameraIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill={active ? 'currentColor' : 'none'} strokeLinecap="round" strokeLinejoin="round">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-    <circle cx="12" cy="13" r="4" />
-  </svg>
-);
-
-const ChatBubbleIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill={active ? 'currentColor' : 'none'} strokeLinecap="round" strokeLinejoin="round">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M21 15a3 3 0 0 1 -3 3h-9l-4 4v-13a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v6z" />
-  </svg>
-);
-const UserIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill={active ? 'currentColor' : 'none'} strokeLinecap="round" strokeLinejoin="round">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <circle cx="12" cy="7" r="4" />
-    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-  </svg>
-);

@@ -3,106 +3,111 @@ import { useAuth } from '../hooks/useAuth';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Link } from 'react-router-dom';
-import { motion, Variants } from 'framer-motion';
-import { FlameIcon, GemIcon, ArrowRightIcon } from '../components/ui/Icons';
-import { useCourses } from '../contexts/CourseContext';
-import { RecommendedLesson } from '../components/RecommendedLesson';
+import { motion } from 'framer-motion';
+import { SpeakerIcon } from '../components/ui/Icons';
 import { Mascot } from '../components/ui/Mascot';
-
-const StatCard: React.FC<{ icon: React.ReactNode; label: string; value: string | number; color: string; accent: string }> = ({ icon, label, value, color, accent }) => (
-    <div className={`flex-1 p-5 rounded-3xl ${color} border-b-4 ${accent} shadow-sm`}>
-      <div className="flex flex-col items-center text-center gap-1">
-        <div className="mb-1">{icon}</div>
-        <p className="font-extrabold text-2xl text-brand-text leading-none">{value}</p>
-        <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">{label}</p>
-      </div>
-    </div>
-);
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
-  const { courses } = useCourses();
   
   if (!user) return null;
-  
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.1 }
-    }
-  };
-
-  const itemVariants: Variants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: 'spring', stiffness: 100 }
-    }
-  };
 
   return (
-    <motion.div 
-      className="space-y-8 max-w-md mx-auto"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      <motion.header variants={itemVariants} className="flex justify-between items-center px-2">
-        <div>
-          <h1 className="text-3xl font-extrabold text-brand-text tracking-tight">Hola, {user.name}!</h1>
-          <p className="text-gray-400 font-bold text-sm">READY FOR YOUR SPANISH RECAP?</p>
-        </div>
-        <div className="p-1 rounded-2xl bg-white border-2 border-brand-stroke shadow-sm hover:scale-110 transition-transform">
-           <Mascot size={52} expression="collapsed" />
-        </div>
-      </motion.header>
-      
-      <motion.div className="flex gap-4" variants={itemVariants}>
-        <StatCard icon={<FlameIcon className="w-7 h-7 text-brand-yellow"/>} label="Streak" value={user.streak} color="bg-brand-yellow/10" accent="border-brand-yellow" />
-        <StatCard icon={<GemIcon className="w-7 h-7 text-brand-blue"/>} label="Points" value={user.points} color="bg-brand-blue/10" accent="border-brand-blue" />
-      </motion.div>
+    <div className="space-y-8 pb-10">
+      <header>
+        <h1 className="text-2xl font-bold text-brand-text flex items-center gap-3">
+          <span className="text-3xl">👋</span> Welcome Onboard, {user.name.split(' ')[0]}
+        </h1>
+      </header>
 
-      <RecommendedLesson />
-
-      <motion.div variants={itemVariants}>
-        <Link 
-          to="/chat" 
-          className="group block w-full p-6 rounded-3xl bg-white border-2 border-brand-stroke border-b-8 hover:border-brand-blue transition-all duration-300"
-        >
-            <div className="flex items-center gap-5">
-                <div className="bg-brand-blue/10 p-2 rounded-2xl">
-                    <Mascot size={70} expression="idle" />
-                </div>
-                <div className="flex-grow">
-                    <h2 className="text-xl font-extrabold text-brand-text leading-tight">Practice with Ustaza</h2>
-                    <p className="text-sm font-bold text-gray-400 mt-1 uppercase tracking-wide">AI CHAT COMPANION</p>
-                </div>
-                <div className="bg-brand-snow p-2 rounded-full group-hover:bg-brand-blue group-hover:text-white transition-colors">
-                  <ArrowRightIcon className="w-5 h-5" />
-                </div>
+      {/* Word of the Day Card */}
+      <Card className="p-8 border-brand-stroke shadow-sm">
+        <div className="space-y-6">
+          <div>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Word of the Day</p>
+            <div className="flex items-center gap-6">
+               <h2 className="text-4xl font-black text-brand-text">escritura</h2>
+               <div className="flex items-center gap-3">
+                  <button className="p-2 bg-brand-snow rounded-full hover:bg-brand-stroke transition-colors">
+                    <SpeakerIcon className="w-5 h-5 text-gray-500" />
+                  </button>
+                  <button className="p-2 bg-brand-snow rounded-full hover:bg-brand-stroke transition-colors text-gray-500">🔖</button>
+               </div>
             </div>
-        </Link>
-      </motion.div>
-
-      <motion.div variants={itemVariants} className="space-y-4">
-        <div className="flex items-center justify-between px-2">
-            <h2 className="text-xl font-extrabold text-brand-text uppercase tracking-wider">Courses</h2>
-            <Link to="/courses" className="text-brand-blue font-extrabold text-sm uppercase">See all</Link>
+            <p className="text-lg font-medium text-gray-500 mt-2">writing</p>
+          </div>
+          
+          <div className="pt-6 border-t border-brand-stroke">
+            <div className="flex items-center gap-4">
+               <h3 className="text-2xl font-bold text-brand-text">Esta es una escritura hermosa</h3>
+               <button className="p-2 bg-brand-snow rounded-full hover:bg-brand-stroke transition-colors">
+                  <SpeakerIcon className="w-4 h-4 text-gray-400" />
+               </button>
+               <button className="p-2 bg-brand-snow rounded-full hover:bg-brand-stroke transition-colors text-gray-400 text-sm">🔖</button>
+            </div>
+            <p className="text-gray-500 mt-1 font-medium italic">This is a beautiful writing</p>
+          </div>
         </div>
-        {courses.slice(0, 2).map(course => (
-          <Link to={`/course/${course.id}`} key={course.id}>
-            <Card className="flex items-center gap-5 hover:translate-x-1 hover:border-brand-blue active:translate-x-0 transition-all border-b-8">
-              <div className={`text-3xl p-4 rounded-2xl ${course.color} shadow-sm border-2 border-white`}>{course.icon}</div>
-              <div>
-                <h3 className="font-extrabold text-lg text-brand-text leading-tight">{course.title}</h3>
-                <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">{course.lessons.length} LESSONS</p>
-              </div>
-            </Card>
-          </Link>
-        ))}
-      </motion.div>
-    </motion.div>
+      </Card>
+
+      {/* Activity Grid */}
+      <section>
+        <h3 className="text-xl font-black text-brand-text mb-6">Learn, Practice and Discover</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+           <Link to="/learn" className="group">
+              <Card className="p-0 overflow-hidden border-b-8 hover:translate-y-[-4px] transition-all">
+                 <div className="h-48 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center text-6xl">📚</div>
+                 <div className="p-5 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                       <span className="text-brand-purple">📖</span>
+                       <span className="font-bold text-sm text-gray-700">Learn new words</span>
+                    </div>
+                    <span className="text-brand-purple font-black">→</span>
+                 </div>
+              </Card>
+           </Link>
+
+           <Link to="/chat" className="group">
+              <Card className="p-0 overflow-hidden border-b-8 hover:translate-y-[-4px] transition-all">
+                 <div className="h-48 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-6xl">💬</div>
+                 <div className="p-5 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                       <span className="text-brand-blue">💬</span>
+                       <span className="font-bold text-sm text-gray-700">Start a new Chat</span>
+                    </div>
+                    <span className="text-brand-blue font-black">→</span>
+                 </div>
+              </Card>
+           </Link>
+
+           <Link to="/videos" className="group">
+              <Card className="p-0 overflow-hidden border-b-8 hover:translate-y-[-4px] transition-all relative">
+                 <div className="h-48 bg-gradient-to-br from-brand-green/10 to-brand-green/20 flex items-center justify-center text-6xl">🎥</div>
+                 <div className="absolute top-2 right-2 bg-brand-text text-white text-[10px] font-black px-2 py-1 rounded-md">#1</div>
+                 <div className="p-5 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                       <span className="text-brand-green">▶️</span>
+                       <span className="font-bold text-sm text-gray-700">Watch a Video</span>
+                    </div>
+                    <span className="text-brand-green font-black">→</span>
+                 </div>
+              </Card>
+           </Link>
+        </div>
+      </section>
+
+      {/* Skills Banner */}
+      <div className="bg-brand-purple rounded-3xl p-6 flex items-center justify-between text-white shadow-lg overflow-hidden relative">
+         <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+         <div className="flex items-center gap-5 relative z-10">
+            <div className="bg-white/20 p-3 rounded-2xl text-3xl">📄</div>
+            <div>
+               <h3 className="text-lg font-black leading-tight">Test your skills</h3>
+               <p className="text-sm font-bold opacity-80 uppercase tracking-wider mt-1">Track your progress with a quiz</p>
+            </div>
+         </div>
+         <Button className="bg-white text-brand-purple border-white hover:bg-white/90 font-black px-8">Take Quiz</Button>
+      </div>
+    </div>
   );
 };
