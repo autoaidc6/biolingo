@@ -6,9 +6,8 @@ import { SpeakerIcon, MicrophoneIcon, StopIcon } from '../components/ui/Icons';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 import { Mascot, MascotExpression } from '../components/ui/Mascot';
 
-// Simple typing indicator component
 const TypingIndicator = () => (
-  <div className="flex items-center space-x-1">
+  <div className="flex items-center space-x-1.5 p-3 bg-gray-100 rounded-2xl w-fit">
     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
@@ -29,11 +28,6 @@ Your goal is to help users learn and practice Spanish in a fun and conversationa
 - When asked a question, provide a direct answer and then try to engage the user with a related question to keep the conversation going.
 - Use emojis to make the conversation more engaging. 👍🎉📚
 - Never break character. You are always Ustaza.`;
-
-const chatAreaStyle = {
-    backgroundImage: 'radial-gradient(#d4d4d4 1px, transparent 1px)',
-    backgroundSize: '16px 16px',
-};
 
 export const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -58,11 +52,10 @@ export const ChatPage: React.FC = () => {
         });
         setChat(chatSession);
         setMessages([
-          { id: 1, text: '¡Hola! Soy Ustaza. Ask me anything about Spanish! 🇪🇸', sender: 'bot' },
+          { id: 1, text: '¡Hola! Soy Ustaza. Ready to practice some Spanish? 🇪🇸', sender: 'bot' },
         ]);
       } catch (error) {
-        console.error("Chat init failed:", error);
-        setMessages([{ id: 1, text: "I can't connect right now, sorry! 🛠️", sender: 'bot' }]);
+        setMessages([{ id: 1, text: "I'm having trouble connecting right now! 🛠️", sender: 'bot' }]);
       } finally {
         setIsLoading(false);
       }
@@ -108,11 +101,9 @@ export const ChatPage: React.FC = () => {
       }
       setUstazaExpression('happy');
       setTimeout(() => setUstazaExpression('idle'), 2000);
-
     } catch (error) {
-      console.error("Error sending message:", error);
       setUstazaExpression('idle');
-      setMessages(prev => [...prev, { id: Date.now() + 1, text: "Oops! Try again.", sender: 'bot' }]);
+      setMessages(prev => [...prev, { id: Date.now() + 1, text: "Oops! My bad. Try again?", sender: 'bot' }]);
     } finally {
       setIsLoading(false);
     }
@@ -127,26 +118,33 @@ export const ChatPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-[85vh]">
-      <div className="flex items-center gap-3 mb-4">
-        <Mascot size={60} expression={ustazaExpression} />
-        <h1 className="text-3xl font-bold text-brand-text">Ustaza Chat</h1>
+    <div className="flex flex-col h-[calc(100vh-8rem)] max-w-lg mx-auto">
+      <div className="flex items-center gap-4 mb-6 px-2">
+        <Mascot size={70} expression={ustazaExpression} />
+        <div>
+          <h1 className="text-2xl font-black text-brand-text leading-none uppercase tracking-tight">Ustaza AI</h1>
+          <p className="text-[10px] font-bold text-brand-green uppercase mt-1 tracking-widest">Online • Your Tutor</p>
+        </div>
       </div>
       
-      <div style={chatAreaStyle} className="flex-grow bg-white border-2 border-brand-stroke rounded-2xl p-4 overflow-y-auto space-y-4 shadow-inner">
+      <div className="flex-grow bg-white border-2 border-brand-stroke rounded-3xl p-6 overflow-y-auto space-y-5 shadow-sm">
         {messages.map((msg) => (
-          <div key={msg.id} className={`flex items-end gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+          <div key={msg.id} className={`flex items-end gap-3 ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
             {msg.sender === 'bot' && (
                  <div className="flex-shrink-0 mb-1">
                     <Mascot size={32} expression="collapsed" />
                  </div>
             )}
-            <div className={`max-w-[85%] lg:max-w-md px-4 py-3 rounded-2xl shadow-sm ${msg.sender === 'user' ? 'bg-brand-blue text-white rounded-br-none' : 'bg-gray-100 text-brand-text rounded-bl-none'}`}>
-              {msg.text === '' && msg.sender === 'bot' ? <TypingIndicator /> : <p className="whitespace-pre-wrap">{msg.text}</p>}
+            <div className={`max-w-[80%] px-5 py-3 rounded-2xl border-b-4 font-bold text-sm ${
+              msg.sender === 'user' 
+                ? 'bg-brand-blue text-white border-brand-blue-dark rounded-br-none' 
+                : 'bg-brand-snow text-brand-text border-brand-stroke rounded-bl-none'
+            }`}>
+              {msg.text === '' && msg.sender === 'bot' ? <TypingIndicator /> : <p className="leading-relaxed">{msg.text}</p>}
             </div>
             {msg.sender === 'bot' && msg.text && (
-                 <button onClick={() => speak(msg.text)} className="p-1 text-gray-400 hover:text-brand-blue transition-colors self-center flex-shrink-0">
-                     <SpeakerIcon className="w-5 h-5"/>
+                 <button onClick={() => speak(msg.text)} className="p-2 text-gray-400 hover:text-brand-blue transition-colors self-center bg-gray-50 rounded-full">
+                     <SpeakerIcon className="w-4 h-4"/>
                  </button>
             )}
           </div>
@@ -154,26 +152,27 @@ export const ChatPage: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="mt-4 flex gap-2 items-end">
+      <div className="mt-6 flex gap-3 items-center">
         {isSupported && (
-            <div className={`flex bg-white border-2 rounded-xl overflow-hidden h-[54px] transition-colors ${isListening ? 'border-red-400 ring-2 ring-red-100' : 'border-brand-stroke'}`}>
-                <button className="px-3 flex items-center justify-center text-gray-500 hover:text-brand-blue" onClick={handleMicClick}>
-                    {isListening ? <StopIcon className="w-5 h-5 animate-pulse" /> : <MicrophoneIcon className="w-6 h-6" />}
-                </button>
-            </div>
+            <button 
+              className={`p-4 rounded-2xl transition-all border-b-4 ${isListening ? 'bg-brand-red text-white border-[#D13B3B]' : 'bg-brand-snow text-brand-text border-brand-stroke'}`}
+              onClick={handleMicClick}
+            >
+                {isListening ? <StopIcon className="w-6 h-6 animate-pulse" /> : <MicrophoneIcon className="w-6 h-6" />}
+            </button>
         )}
-        <div className="flex-grow relative">
-            <Input 
+        <div className="flex-grow">
+            <input 
                 value={input} 
                 onChange={(e) => setInput(e.target.value)} 
                 placeholder={isListening ? "Listening..." : "Type your message..."}
                 onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSend()}
                 disabled={isLoading || !chat}
-                className={isListening ? "ring-2 ring-red-100 border-red-300" : ""}
+                className={`w-full bg-white border-2 border-brand-stroke border-b-4 rounded-2xl px-5 py-4 font-bold text-sm focus:outline-none focus:border-brand-blue transition-all ${isListening ? "border-brand-red" : ""}`}
             />
         </div>
-        <Button onClick={handleSend} size="md" disabled={isLoading || !chat} className="h-[54px]">
-            {isLoading ? '...' : 'Send'}
+        <Button onClick={handleSend} size="md" disabled={isLoading || !chat || !input.trim()} className="h-[58px]">
+            Send
         </Button>
       </div>
     </div>

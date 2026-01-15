@@ -26,14 +26,29 @@
             },
             colors: {
               'brand-green': '#58CC02',
-              'brand-green-dark': '#4CAF50',
+              'brand-green-dark': '#46A302',
               'brand-blue': '#1CB0F6',
               'brand-blue-dark': '#1899D6',
-              'brand-gray': '#E5E5E5',
+              'brand-purple': '#CE82FF',
+              'brand-yellow': '#FFC800',
+              'brand-red': '#FF4B4B',
               'brand-text': '#4B4B4B',
               'brand-stroke': '#E5E5E5',
-              'brand-off-white': '#F7F5F2',
+              'brand-off-white': '#FFFFFF',
+              'brand-snow': '#F7F5F2',
             },
+            boxShadow: {
+              '3d-green': '0 4px 0 0 #46A302',
+              '3d-blue': '0 4px 0 0 #1899D6',
+              '3d-red': '0 4px 0 0 #D13B3B',
+              'soft': '0 8px 30px rgba(0,0,0,0.04)',
+              'card': '0 2px 0 0 rgba(0,0,0,0.05)',
+            },
+            borderRadius: {
+              'xl': '16px',
+              '2xl': '20px',
+              '3xl': '24px',
+            }
           },
         },
       }
@@ -52,7 +67,7 @@
 }
 </script>
 </head>
-  <body class="bg-brand-off-white text-brand-text antialiased font-sans">
+  <body class="bg-brand-snow text-brand-text antialiased font-sans">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
 

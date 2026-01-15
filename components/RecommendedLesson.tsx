@@ -4,7 +4,6 @@ import { motion, Variants } from 'framer-motion';
 import { useLearningRecommendation } from '../hooks/useLearningRecommendation';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
-import { LoadingSpinnerIcon } from './ui/Icons';
 import { Mascot } from './ui/Mascot';
 
 export const RecommendedLesson: React.FC = () => {
@@ -22,11 +21,11 @@ export const RecommendedLesson: React.FC = () => {
     if (isLoading) {
         return (
             <motion.div variants={itemVariants}>
-                <Card className="flex items-center gap-4 bg-yellow-50/70 border-yellow-200">
-                    <Mascot size={50} expression="thinking" />
+                <Card className="flex items-center gap-5 bg-brand-snow/50 border-dashed border-2">
+                    <Mascot size={60} expression="thinking" />
                     <div>
-                        <h3 className="font-bold text-yellow-800">Thinking...</h3>
-                        <p className="text-sm text-yellow-700 font-medium">Picking your perfect lesson.</p>
+                        <h3 className="font-extrabold text-brand-text uppercase tracking-wider">Choosing...</h3>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">AI IS CURATING YOUR PATH</p>
                     </div>
                 </Card>
             </motion.div>
@@ -41,21 +40,21 @@ export const RecommendedLesson: React.FC = () => {
 
     return (
         <motion.div variants={itemVariants}>
-            <Card className="bg-yellow-50/70 border-yellow-200 overflow-hidden relative">
-                <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 mt-1">
-                       <Mascot size={80} expression="happy" />
+            <Card className="bg-white border-2 border-brand-stroke border-b-8 hover:border-brand-yellow transition-all p-0 overflow-hidden">
+                <div className="flex p-6 gap-5">
+                    <div className="flex-shrink-0">
+                       <Mascot size={85} expression="happy" />
                     </div>
-                    <div>
-                        <h2 className="text-lg font-bold text-yellow-900">Ustaza's Pick</h2>
-                        <h3 className="font-semibold text-brand-text mt-1">{recommendation.title}</h3>
-                        <p className="text-sm text-yellow-800 font-medium mt-1 italic">"{recommendation.reason}"</p>
-                        <Link to={linkTo} className="mt-4 inline-block">
-                            <Button size="sm">
-                                {recommendation.recommendationType === 'lesson' ? 'Let\'s go!' : 'Start Course'}
-                            </Button>
-                        </Link>
+                    <div className="flex flex-col justify-center">
+                        <span className="text-[10px] font-black text-brand-yellow uppercase tracking-[0.2em] mb-1">Ustaza's Recommendation</span>
+                        <h3 className="font-extrabold text-xl text-brand-text leading-tight">{recommendation.title}</h3>
+                        <p className="text-xs text-gray-500 font-bold mt-2 leading-relaxed">"{recommendation.reason}"</p>
                     </div>
+                </div>
+                <div className="p-4 bg-brand-snow border-t-2 border-brand-stroke">
+                  <Link to={linkTo}>
+                      <Button size="md" fullWidth>Continue Journey</Button>
+                  </Link>
                 </div>
             </Card>
         </motion.div>
