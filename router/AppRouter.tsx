@@ -1,4 +1,3 @@
-
 import React, { Suspense, lazy } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -15,10 +14,11 @@ const LessonPage = lazy(() => import('../pages/LessonPage').then(module => ({ de
 const ChatPage = lazy(() => import('../pages/ChatPage').then(module => ({ default: module.ChatPage })));
 const ProfilePage = lazy(() => import('../pages/ProfilePage').then(module => ({ default: module.ProfilePage })));
 const ScanPage = lazy(() => import('../pages/ScanPage').then(module => ({ default: module.ScanPage })));
+const VideoLibraryPage = lazy(() => import('../pages/VideoLibraryPage').then(module => ({ default: module.VideoLibraryPage })));
+const VideoDetailPage = lazy(() => import('../pages/VideoDetailPage').then(module => ({ default: module.VideoDetailPage })));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage').then(module => ({ default: module.NotFoundPage })));
 
 // Feature Shells
-const VideoPage = () => <div className="py-20 text-center"><h1 className="text-3xl font-black text-brand-text">Interactive Videos</h1><p className="mt-4 text-gray-400 font-bold uppercase tracking-widest">Coming Soon in Premium</p></div>;
 const DebatePage = () => <div className="py-20 text-center"><h1 className="text-3xl font-black text-brand-text">Debate & Discuss</h1><p className="mt-4 text-gray-400 font-bold uppercase tracking-widest">Advanced AI Discussions</p></div>;
 const CollectionPage = () => <div className="py-20 text-center"><h1 className="text-3xl font-black text-brand-text">My Collection</h1><p className="mt-4 text-gray-400 font-bold uppercase tracking-widest">Your Saved Vocabulary</p></div>;
 
@@ -71,7 +71,8 @@ export const AppRouter: React.FC = () => {
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/scan" element={<ScanPage />} />
-            <Route path="/videos" element={<VideoPage />} />
+            <Route path="/videos" element={<VideoLibraryPage />} />
+            <Route path="/video/:id" element={<VideoDetailPage />} />
             <Route path="/debate" element={<DebatePage />} />
             <Route path="/collection" element={<CollectionPage />} />
           </Route>

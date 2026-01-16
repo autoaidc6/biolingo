@@ -5,6 +5,12 @@ export enum LessonType {
   FLASHCARD = 'FLASHCARD',
 }
 
+export enum ProficiencyLevel {
+  BEGINNER = 'Beginner',
+  INTERMEDIATE = 'Intermediate',
+  ADVANCED = 'Advanced',
+}
+
 export interface User {
   id: string;
   email: string;
@@ -49,4 +55,14 @@ export interface Course {
   icon: string;
   color: string;
   lessons: Lesson[];
+}
+
+export interface Video {
+  id: string;
+  title: string;
+  youtubeId: string;
+  level: ProficiencyLevel;
+  duration: string;
+  thumbnail: string;
+  transcript: string;
 }

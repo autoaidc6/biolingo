@@ -1,4 +1,4 @@
-import { Course, User, LessonType } from './types';
+import { Course, User, LessonType, Video, ProficiencyLevel } from './types';
 
 export const MOCK_USER: User = {
   id: '1',
@@ -135,4 +135,61 @@ export const MOCK_COURSES: Course[] = [
       { id: 'job-1', title: 'Medical', type: LessonType.FLASHCARD, completed: false, content: [{ id: 'j1', term: 'Doctor', translation: 'Doctor' }, { id: 'j2', term: 'Enfermera', translation: 'Nurse' }] }
     ]
   },
+];
+
+export const MOCK_VIDEOS: Video[] = [
+  {
+    id: 'vid-1',
+    title: 'Spanish Conversation for Beginners',
+    youtubeId: 'p0m_lS_7yA8',
+    level: ProficiencyLevel.BEGINNER,
+    duration: '2:40',
+    thumbnail: 'https://i.ytimg.com/vi/p0m_lS_7yA8/maxresdefault.jpg',
+    transcript: 'Hola, ¿cómo estás? \nMuy bien, ¿y tú? \nYo también, gracias. ¿Cómo te llamas? \nMi nombre es Juan. ¿De dónde eres?'
+  },
+  {
+    id: 'vid-2',
+    title: 'The Spanish Alphabet Song',
+    youtubeId: '56OXP92SryE',
+    level: ProficiencyLevel.INTERMEDIATE,
+    duration: '4:30',
+    thumbnail: 'https://i.ytimg.com/vi/56OXP92SryE/maxresdefault.jpg',
+    transcript: 'A, B, C, CH, D, E, F, G... \nCanta conmigo el abecedario. \nCada letra tiene su sonido especial.'
+  },
+  {
+    id: 'vid-3',
+    title: '3 Questions You Must Know',
+    youtubeId: 'j80t0kQ4E_0',
+    level: ProficiencyLevel.BEGINNER,
+    duration: '3:53',
+    thumbnail: 'https://i.ytimg.com/vi/j80t0kQ4E_0/maxresdefault.jpg',
+    transcript: '¿Qué hora es? \n¿Dónde está el baño? \n¿Cuánto cuesta esto? \nEstas son frases esenciales para viajar.'
+  },
+  {
+    id: 'vid-4',
+    title: 'Learn the 5 Pillars of Grammar',
+    youtubeId: '7B6fB_P_7o0',
+    level: ProficiencyLevel.BEGINNER,
+    duration: '2:50',
+    thumbnail: 'https://i.ytimg.com/vi/7B6fB_P_7o0/maxresdefault.jpg',
+    transcript: 'Hoy vamos a aprender los pilares de la gramática española. \nSustantivos, verbos, adjetivos, adverbios y preposiciones.'
+  },
+  {
+    id: 'vid-5',
+    title: 'Fruit Names in Spanish',
+    youtubeId: 'qf_fL0yE5zM',
+    level: ProficiencyLevel.BEGINNER,
+    duration: '28:07',
+    thumbnail: 'https://i.ytimg.com/vi/qf_fL0yE5zM/maxresdefault.jpg',
+    transcript: 'Manzana, plátano, naranja, uva. \nVamos al mercado a comprar fruta fresca.'
+  },
+  {
+    id: 'vid-6',
+    title: 'Facial Expressions Vocabulary',
+    youtubeId: 'S_h6rW3-N6c',
+    level: ProficiencyLevel.BEGINNER,
+    duration: '11:00',
+    thumbnail: 'https://i.ytimg.com/vi/S_h6rW3-N6c/maxresdefault.jpg',
+    transcript: 'Sonrisa, ceño fruncido, sorpresa. \n¿Cómo te sientes hoy? Estoy feliz.'
+  }
 ];
