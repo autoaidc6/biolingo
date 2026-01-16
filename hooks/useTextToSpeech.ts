@@ -64,7 +64,7 @@ export const useTextToSpeech = (text: string) => {
                 }
                 const response = await ai.models.generateContent({
                     model: "gemini-2.5-flash-preview-tts",
-                    contents: [{ parts: [{ text: `Say clearly: ${text}` }] }],
+                    contents: { parts: [{ text: `Say clearly: ${text}` }] }, // Correct multi-part format
                     config: {
                         responseModalities: [Modality.AUDIO],
                         speechConfig: {
