@@ -12,6 +12,7 @@ let stopCurrentlyPlaying: (() => void) | null = null;
 export const useTextToSpeech = (text: string) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
 
     // Using a ref to hold the stop function to avoid stale closures.
@@ -43,6 +44,8 @@ export const useTextToSpeech = (text: string) => {
             return;
         }
         
+        setError(null); // Reset error on new attempt
+
         // If another audio is playing, stop it first.
         if (stopCurrentlyPlaying) {
             stopCurrentlyPlaying();
@@ -55,7 +58,12 @@ export const useTextToSpeech = (text: string) => {
 
         // Ensure the AudioContext is resumed before attempting to play sound
         if (audioContext.state === 'suspended') {
-            await audioContext.resume();
+            try {
+                await audioContext.resume();
+            } catch (e) {
+                setError("Audio context could not be started.");
+                return;
+            }
         }
 
         let audioBuffer: AudioBuffer | undefined = audioCache.get(text);
@@ -89,8 +97,9 @@ export const useTextToSpeech = (text: string) => {
                 const buffer = await decodeAudioData(decodedBytes, audioContext, 24000, 1);
                 audioCache.set(text, buffer);
                 audioBuffer = buffer;
-            } catch (error) {
-                console.error("TTS generation failed:", error);
+            } catch (err) {
+                console.error("TTS generation failed:", err);
+                setError("Audio could not be loaded. Please check your connection.");
                 setIsLoading(false);
                 return;
             } finally {
@@ -99,23 +108,35 @@ export const useTextToSpeech = (text: string) => {
         }
         
         if (audioBuffer) {
-            const source = audioContext.createBufferSource();
-            source.buffer = audioBuffer;
-            source.connect(audioContext.destination);
-            source.onended = () => {
-                // onended might be called when we manually stop it, so we use a check
-                if (stopCurrentlyPlaying === stopRef.current) {
-                    setIsPlaying(false);
-                    stopCurrentlyPlaying = null;
-                }
-            };
-            source.start();
-            sourceNodeRef.current = source;
-            setIsPlaying(true);
-            // Register this instance's stop function as the current one.
-            stopCurrentlyPlaying = stopRef.current;
+            try {
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(audioContext.destination);
+                source.onended = () => {
+                    // onended might be called when we manually stop it, so we use a check
+                    if (stopCurrentlyPlaying === stopRef.current) {
+                        setIsPlaying(false);
+                        stopCurrentlyPlaying = null;
+                    }
+                };
+                source.start();
+                sourceNodeRef.current = source;
+                setIsPlaying(true);
+                // Register this instance's stop function as the current one.
+                stopCurrentlyPlaying = stopRef.current;
+            } catch (err) {
+                setError("Failed to play audio.");
+            }
         }
     }, [text, stop, isPlaying]);
+
+    // Clear error automatically after 5 seconds
+    useEffect(() => {
+        if (error) {
+            const t = setTimeout(() => setError(null), 5000);
+            return () => clearTimeout(t);
+        }
+    }, [error]);
 
     useEffect(() => {
         // Cleanup on unmount
@@ -127,5 +148,5 @@ export const useTextToSpeech = (text: string) => {
         };
     }, [stop]);
 
-    return { togglePlay, isLoading, isPlaying };
+    return { togglePlay, isLoading, isPlaying, error };
 };

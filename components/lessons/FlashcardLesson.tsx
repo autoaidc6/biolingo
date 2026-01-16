@@ -23,7 +23,7 @@ export const FlashcardLesson: React.FC<FlashcardLessonProps> = ({ title, cards, 
   const [autoPlay, setAutoPlay] = useState(false);
 
   const currentCard = cards[currentIndex];
-  const { togglePlay, isPlaying, isLoading: isAudioLoading } = useTextToSpeech(currentCard.term);
+  const { togglePlay, isPlaying, isLoading: isAudioLoading, error: audioError } = useTextToSpeech(currentCard.term);
 
   // Generate dynamic quiz questions based on the flashcards
   const generatedQuestions = useMemo(() => {
@@ -143,6 +143,20 @@ export const FlashcardLesson: React.FC<FlashcardLessonProps> = ({ title, cards, 
             >
               Close
             </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Audio Error Message */}
+      <AnimatePresence>
+        {audioError && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="absolute top-28 left-1/2 -translate-x-1/2 z-50 bg-brand-red text-white px-6 py-2 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg border-b-4 border-[#B91C1C]"
+          >
+            {audioError}
           </motion.div>
         )}
       </AnimatePresence>
