@@ -1,9 +1,22 @@
-
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { Mascot } from '../ui/Mascot';
 import { useAuth } from '../../hooks/useAuth';
+
+const InstagramIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+  </svg>
+);
+
+const TwitterIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+  </svg>
+);
 
 export const LandingLayout: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -61,21 +74,26 @@ export const LandingLayout: React.FC = () => {
       <footer className="bg-[#1C1C21] text-white py-16 px-6">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center gap-3 mb-6">
               <Mascot size={40} expression="collapsed" />
               <span className="text-2xl font-black text-brand-purple tracking-tighter">Biolingo</span>
             </div>
-            <p className="text-gray-400 max-w-sm font-medium">
-              The world's most friendly way to learn Spanish. Join millions of learners today.
-            </p>
+            <div className="space-y-2">
+              <p className="text-gray-300 max-w-sm font-bold text-lg">
+                The world's most friendly way to learn Spanish.
+              </p>
+              <p className="text-gray-500 max-w-sm font-bold">
+                Join millions of learners today.
+              </p>
+            </div>
             <div className="flex gap-4 mt-8">
-              <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-purple transition-colors cursor-pointer">
+              <div className="w-10 h-10 rounded-xl bg-gray-800 flex items-center justify-center hover:bg-brand-purple transition-colors cursor-pointer text-gray-400 hover:text-white">
                 <span className="sr-only">Instagram</span>
-                <div className="w-5 h-5 bg-gray-400 rounded-sm" />
+                <InstagramIcon />
               </div>
-              <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-purple transition-colors cursor-pointer">
-                <span className="sr-only">TikTok</span>
-                <div className="w-5 h-5 bg-gray-400 rounded-sm" />
+              <div className="w-10 h-10 rounded-xl bg-gray-800 flex items-center justify-center hover:bg-brand-purple transition-colors cursor-pointer text-gray-400 hover:text-white">
+                <span className="sr-only">Twitter</span>
+                <TwitterIcon />
               </div>
             </div>
           </div>
@@ -98,7 +116,7 @@ export const LandingLayout: React.FC = () => {
             </ul>
           </div>
         </div>
-        <div className="max-w-6xl mx-auto mt-16 pt-8 border-t border-gray-800 text-center text-xs text-gray-500 font-bold uppercase tracking-widest">
+        <div className="max-w-6xl mx-auto mt-16 pt-8 border-t border-gray-800 text-center text-[10px] text-gray-600 font-black uppercase tracking-widest">
           © 2025 Biolingo Inc. 
         </div>
       </footer>
