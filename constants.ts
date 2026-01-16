@@ -1,4 +1,3 @@
-
 import { Course, User, LessonType } from './types';
 
 export const MOCK_USER: User = {
@@ -12,6 +11,31 @@ export const MOCK_USER: User = {
 };
 
 export const MOCK_COURSES: Course[] = [
+  {
+    id: 'colours-foundations',
+    title: 'Colours',
+    description: 'Master the vibrant spectrum of Spanish colors.',
+    icon: '🎨',
+    color: 'bg-indigo-50',
+    lessons: [
+      {
+        id: 'col-1',
+        title: 'Basic Colours',
+        type: LessonType.FLASHCARD,
+        completed: false,
+        content: [
+          { id: '1', term: 'Rojo', translation: 'Red' },
+          { id: '2', term: 'Azul', translation: 'Blue' },
+          { id: '3', term: 'Verde', translation: 'Green' },
+          { id: '4', term: 'Amarillo', translation: 'Yellow' },
+          { id: '5', term: 'Blanco', translation: 'White' },
+          { id: '6', term: 'Negro', translation: 'Black' },
+          { id: '7', term: 'Naranja', translation: 'Orange' },
+          { id: '8', term: 'Rosa', translation: 'Pink' },
+        ]
+      }
+    ]
+  },
   {
     id: 'spanish-foundations-1',
     title: 'Foundations 1',
@@ -45,67 +69,6 @@ export const MOCK_COURSES: Course[] = [
           { question: "Which of these is NOT a vowel in Spanish?", options: ["A", "U", "B", "E"], correctAnswer: "B" },
         ]
       },
-      { 
-        id: 'sf1-3', 
-        title: 'Basic Questions', 
-        type: LessonType.READING, 
-        completed: false,
-        content: [
-          "Knowing how to ask questions is key to conversation.",
-          "¿Qué? - What?",
-          "¿Quién? - Who?",
-          "¿Cuándo? - When?",
-          "¿Dónde? - Where?",
-          "¿Por qué? - Why?",
-          "¿Cómo? - How?",
-        ]
-      },
-    ],
-  },
-  {
-    id: 'travel-essentials',
-    title: 'Travel Essentials',
-    description: 'Learn key phrases for your next trip to a Spanish-speaking country.',
-    icon: '✈️',
-    color: 'bg-blue-100',
-    lessons: [
-      { 
-        id: 'te1', 
-        title: 'At the Airport', 
-        type: LessonType.READING, 
-        completed: false,
-        content: [
-            "Navigating the airport is your first challenge!",
-            "El aeropuerto - The airport",
-            "El vuelo - The flight",
-            "El pasaporte - The passport",
-            "La maleta - The suitcase",
-            "¿Dónde está la puerta de embarque? - Where is the boarding gate?",
-        ]
-      },
-      { 
-        id: 'te2', 
-        title: 'Asking for Directions', 
-        type: LessonType.MATCHING, 
-        completed: false,
-        content: [
-            { id: 1, term: "La calle", definition: "The street" },
-            { id: 2, term: "A la derecha", definition: "To the right" },
-            { id: 3, term: "A la izquierda", definition: "To the left" },
-            { id: 4, term: "Todo recto", definition: "Straight ahead" },
-            { id: 5, term: "El mapa", definition: "The map" },
-        ]
-      },
-      { 
-        id: 'te3', 
-        title: 'Checking In', 
-        type: LessonType.QUIZ, 
-        completed: false,
-        content: [
-            { question: "How do you say 'I have a reservation'?", options: ["Tengo una pregunta", "Tengo una reservación", "Quiero un café", "Dónde está el baño"], correctAnswer: "Tengo una reservación" },
-            { question: "What does 'La cuenta, por favor' mean?", options: ["The key, please", "The menu, please", "The check, please", "The room, please"], correctAnswer: "The check, please" },
-        ]
-      },
     ],
   },
   {
@@ -128,269 +91,6 @@ export const MOCK_COURSES: Course[] = [
             "La cuenta - The check/bill",
         ]
       },
-      { 
-        id: 'fd2', 
-        title: 'Common Dishes', 
-        type: LessonType.MATCHING, 
-        completed: false,
-        content: [
-            { id: 1, term: "El pollo", definition: "Chicken" },
-            { id: 2, term: "El pescado", definition: "Fish" },
-            { id: 3, term: "La ensalada", definition: "Salad" },
-            { id: 4, term: "La sopa", definition: "Soup" },
-            { id: 5, term: "El pan", definition: "Bread" },
-        ]
-      },
-      {
-        id: 'fd3',
-        title: 'Ordering Food',
-        type: LessonType.QUIZ,
-        completed: false,
-        content: [
-          { question: "How would you ask for water?", options: ["Un agua, por favor", "Un vino, por favor", "Un café, por favor", "Una cerveza, por favor"], correctAnswer: "Un agua, por favor" },
-          { question: "What does 'postre' mean?", options: ["Appetizer", "Main Course", "Dessert", "Drink"], correctAnswer: "Dessert" },
-        ]
-      }
     ],
   },
-  {
-    id: 'grammar-pro',
-    title: 'Grammar Pro',
-    description: 'Dive into verb conjugations and sentence structures.',
-    icon: '📚',
-    color: 'bg-yellow-100',
-    lessons: [
-      { 
-        id: 'gp1', 
-        title: 'Present Tense', 
-        type: LessonType.READING, 
-        completed: false,
-        content: [
-            "The present tense is used for actions happening now or habitual actions.",
-            "For verbs ending in -ar (like hablar - to speak): yo hablo, tú hablas, él/ella/usted habla.",
-            "For verbs ending in -er (like comer - to eat): yo como, tú comes, él/ella/usted come.",
-            "For verbs ending in -ir (like vivir - to live): yo vivo, tú vives, él/ella/usted vive.",
-        ]
-      },
-      { 
-        id: 'gp2', 
-        title: 'Ser vs. Estar', 
-        type: LessonType.READING, 
-        completed: false,
-        content: [
-            "Both 'ser' and 'estar' mean 'to be', but they are used in different contexts.",
-            "'Ser' is used for permanent or lasting attributes (DOCTOR): Description, Occupation, Characteristic, Time, Origin, and Relationship.",
-            "Example: 'Yo soy alto' (I am tall).",
-            "'Estar' is used for temporary states and locations (PLACE): Position, Location, Action, Condition, and Emotion.",
-            "Example: 'Yo estoy cansado' (I am tired).",
-        ]
-      },
-      {
-        id: 'gp3',
-        title: 'Past Tense Quiz',
-        type: LessonType.QUIZ,
-        completed: false,
-        content: [
-          { question: "Which is the correct past tense of 'comer' (yo)?", options: ["Como", "Comí", "Comeré", "Comiendo"], correctAnswer: "Comí" },
-          { question: "'Fui' is the past tense of which verb?", options: ["Ir (to go)", "Hacer (to do)", "Tener (to have)", "Ver (to see)"], correctAnswer: "Ir (to go)" },
-        ]
-      },
-    ],
-  },
-  {
-    id: 'daily-conversations',
-    title: 'Daily Conversations',
-    description: 'Practice common interactions and phrases for everyday life.',
-    icon: '💬',
-    color: 'bg-purple-100',
-    lessons: [
-      { 
-        id: 'dc1', 
-        title: 'Making Friends', 
-        type: LessonType.READING, 
-        completed: false,
-        content: [
-            "Let's make some friends!",
-            "Me llamo... - My name is...",
-            "¿Cómo te llamas? - What is your name?",
-            "Mucho gusto - Nice to meet you",
-            "¿De dónde eres? - Where are you from?",
-        ]
-      },
-      { 
-        id: 'dc2', 
-        title: 'At the Market', 
-        type: LessonType.MATCHING, 
-        completed: false,
-        content: [
-            { id: 1, term: "Las frutas", definition: "The fruits" },
-            { id: 2, term: "Las verduras", definition: "The vegetables" },
-            { id: 3, term: "¿Cuánto cuesta?", definition: "How much is it?" },
-            { id: 4, term: "Un kilo", definition: "One kilo" },
-            { id: 5, term: "La bolsa", definition: "The bag" },
-        ]
-      },
-      {
-        id: 'dc3',
-        title: 'Common Phrases',
-        type: LessonType.QUIZ,
-        completed: false,
-        content: [
-          { question: "How do you say 'What's up?' informally?", options: ["¿Cómo estás?", "¿Qué tal?", "¿Qué pasa?", "Buenos días"], correctAnswer: "¿Qué tal?" },
-          { question: "What is a common way to say 'See you later'?", options: ["Adiós", "Hasta luego", "Buenas noches", "Gracias"], correctAnswer: "Hasta luego" },
-        ]
-      }
-    ],
-  },
-  {
-    id: 'cultural-insights',
-    title: 'Cultural Insights',
-    description: 'Learn about the traditions and festivals of Spanish-speaking countries.',
-    icon: '🌍',
-    color: 'bg-teal-100',
-    lessons: [
-      { 
-        id: 'ci1', 
-        title: 'Famous Festivals', 
-        type: LessonType.READING, 
-        completed: false,
-        content: [
-            "Spain and Latin America are famous for their vibrant festivals.",
-            "La Tomatina: A festival held in Buñol, Spain, where participants throw tomatoes at each other for fun.",
-            "Día de los Muertos: The 'Day of the Dead' is a Mexican holiday where families welcome back the souls of their deceased relatives for a brief reunion that includes food, drink, and celebration.",
-        ]
-      },
-      { 
-        id: 'ci2', 
-        title: 'Traditional Foods', 
-        type: LessonType.READING, 
-        completed: false,
-        content: [
-            "Let's explore some delicious traditional foods!",
-            "Paella: A famous Spanish rice dish originally from Valencia. It can be made with seafood, chicken, or vegetables.",
-            "Tacos: A traditional Mexican dish consisting of a small hand-sized corn or wheat tortilla topped with a filling.",
-            "Arepas: A type of food made of ground maize dough, popular in Colombia and Venezuela. It can be served with various fillings like cheese, avocado, or shredded beef.",
-        ]
-      },
-    ],
-  },
-  {
-    id: 'spanish-reading-club',
-    title: 'Spanish Reading Club',
-    description: 'Immerse yourself in engaging short stories designed for learners.',
-    icon: '📖',
-    color: 'bg-orange-100',
-    lessons: [
-      {
-        id: 'src1',
-        title: 'El Gato Músico',
-        type: LessonType.READING,
-        completed: false,
-        content: [
-            "Había una vez un gato que quería ser músico.",
-            "Todos los días, practicaba con su guitarra en el tejado.",
-            "Los vecinos no estaban contentos con el ruido.",
-            "Pero el gato no se rendía, quería ser una estrella de rock.",
-            "Al final, los vecinos empezaron a bailar con su música."
-        ]
-      },
-      {
-        id: 'src2',
-        title: 'Story Comprehension',
-        type: LessonType.QUIZ,
-        completed: false,
-        content: [
-            { question: "What instrument did the cat play?", options: ["Piano", "Guitar", "Drums", "Violin"], correctAnswer: "Guitar" },
-            { question: "Where did the cat practice?", options: ["In the park", "In the kitchen", "On the roof", "In the basement"], correctAnswer: "On the roof" },
-        ]
-      },
-      {
-        id: 'src3',
-        title: 'A Day at the Beach',
-        type: LessonType.READING,
-        completed: false,
-        content: [
-            "Elena y su familia van a la playa.",
-            "Hace mucho sol y el agua está perfecta.",
-            "Elena construye un castillo de arena gigante.",
-            "Su hermano, Tomás, nada en el mar con los peces.",
-            "Comen helado de fresa y disfrutan del día."
-        ]
-      },
-      {
-        id: 'src4',
-        title: 'Beach Vocabulary',
-        type: LessonType.MATCHING,
-        completed: false,
-        content: [
-            { id: 1, term: "La playa", definition: "The beach" },
-            { id: 2, term: "El castillo de arena", definition: "Sandcastle" },
-            { id: 3, term: "Nadar", definition: "To swim" },
-            { id: 4, term: "El helado", definition: "Ice cream" },
-            { id: 5, term: "El sol", definition: "The sun" },
-        ]
-      }
-    ]
-  },
-  {
-    id: 'listening-lab',
-    title: 'Listening Lab',
-    description: 'Sharpen your ears with focused listening exercises and dialogues.',
-    icon: '👂',
-    color: 'bg-indigo-100',
-    lessons: [
-      {
-        id: 'll1',
-        title: 'Interview: Daily Routine',
-        type: LessonType.READING,
-        completed: false,
-        content: [
-            "Listen to this interview about daily routines.",
-            "Entrevistador: ¿A qué hora te levantas normalmente?",
-            "Ana: Me levanto a las siete de la mañana.",
-            "Entrevistador: ¿Y qué haces después?",
-            "Ana: Desayuno café y tostadas, y luego voy al trabajo.",
-            "Entrevistador: ¿Te gusta tu trabajo?",
-            "Ana: Sí, es muy interesante, pero a veces es cansado."
-        ]
-      },
-      {
-        id: 'll2',
-        title: 'Check Comprehension',
-        type: LessonType.QUIZ,
-        completed: false,
-        content: [
-            { question: "What time does Ana get up?", options: ["6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM"], correctAnswer: "7:00 AM" },
-            { question: "What does she have for breakfast?", options: ["Cereal", "Eggs", "Coffee and toast", "Fruit"], correctAnswer: "Coffee and toast" },
-        ]
-      },
-      {
-        id: 'll3',
-        title: 'Weather Report',
-        type: LessonType.READING,
-        completed: false,
-        content: [
-            "Listen to the weather forecast.",
-            "Locutor: Hoy tendremos un día soleado en todo el país.",
-            "Las temperaturas subirán hasta los 25 grados.",
-            "No olviden sus gafas de sol.",
-            "Por la noche, refrescará un poco, así que lleven una chaqueta.",
-            "Mañana se esperan algunas lluvias por la tarde."
-        ]
-      },
-      {
-        id: 'll4',
-        title: 'Weather Terms',
-        type: LessonType.MATCHING,
-        completed: false,
-        content: [
-            { id: 1, term: "Soleado", definition: "Sunny" },
-            { id: 2, term: "Lluvias", definition: "Rains" },
-            { id: 3, term: "Temperaturas", definition: "Temperatures" },
-            { id: 4, term: "Gafas de sol", definition: "Sunglasses" },
-            { id: 5, term: "Chaqueta", definition: "Jacket" },
-        ]
-      }
-    ]
-  }
 ];

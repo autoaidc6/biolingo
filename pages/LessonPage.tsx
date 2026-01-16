@@ -3,10 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { useCourses } from '../contexts/CourseContext';
-import { LessonType, MatchingPair, QuizQuestion } from '../types';
+import { LessonType, MatchingPair, QuizQuestion, Flashcard } from '../types';
 import { QuizLesson } from '../components/lessons/QuizLesson';
 import { ReadingLesson } from '../components/lessons/ReadingLesson';
 import { MatchingLesson } from '../components/lessons/MatchingLesson';
+import { FlashcardLesson } from '../components/lessons/FlashcardLesson';
 import { Mascot } from '../components/ui/Mascot';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -24,7 +25,7 @@ export const LessonPage: React.FC = () => {
   const handleLessonComplete = () => {
       completeLesson(lesson.id);
       setIsCelebration(true);
-      setTimeout(() => navigate(`/course/${course.id}`), 3000);
+      setTimeout(() => navigate(`/dashboard`), 3000);
   }
 
   if (isCelebration) {
@@ -33,7 +34,7 @@ export const LessonPage: React.FC = () => {
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}>
           <Mascot size={200} expression="happy" showBubble="¡Excelente!" />
           <h2 className="text-4xl font-extrabold text-brand-green mt-12 mb-2">Lesson Complete!</h2>
-          <p className="text-gray-500 font-bold text-xl">You're making great progress.</p>
+          <p className="text-slate-500 font-bold text-xl">You're evolving quickly.</p>
         </motion.div>
       </div>
     );
@@ -47,6 +48,15 @@ export const LessonPage: React.FC = () => {
         return <ReadingLesson content={lesson.content as string[] || []} onComplete={handleLessonComplete} />;
       case LessonType.MATCHING:
         return <MatchingLesson pairs={lesson.content as MatchingPair[] || []} onComplete={handleLessonComplete} />;
+      case LessonType.FLASHCARD:
+        return (
+          <FlashcardLesson 
+            title={lesson.title} 
+            cards={lesson.content as Flashcard[] || []} 
+            onComplete={handleLessonComplete}
+            onClose={() => navigate(-1)}
+          />
+        );
       default:
         return (
           <div className="flex-grow flex flex-col justify-center text-center">
@@ -59,10 +69,12 @@ export const LessonPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)]">
-      <header className="flex items-center justify-between mb-4">
-        <button onClick={() => navigate(`/course/${course.id}`)} className="text-3xl text-gray-400 hover:text-brand-text">&times;</button>
-        <Mascot size={45} expression="collapsed" />
-      </header>
+      {lesson.type !== LessonType.FLASHCARD && (
+        <header className="flex items-center justify-between mb-4">
+          <button onClick={() => navigate(-1)} className="text-3xl text-gray-400 hover:text-brand-text">&times;</button>
+          <Mascot size={45} expression="collapsed" />
+        </header>
+      )}
       {renderLessonContent()}
     </div>
   );
