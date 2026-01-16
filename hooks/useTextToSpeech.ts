@@ -20,8 +20,12 @@ export const useTextToSpeech = (text: string) => {
 
     stopRef.current = () => {
         if (sourceNodeRef.current) {
-            sourceNodeRef.current.stop();
-            sourceNodeRef.current.disconnect();
+            try {
+              sourceNodeRef.current.stop();
+              sourceNodeRef.current.disconnect();
+            } catch (e) {
+              // Ignore errors if already stopped
+            }
             sourceNodeRef.current = null;
         }
         setIsPlaying(false);
@@ -60,7 +64,7 @@ export const useTextToSpeech = (text: string) => {
                 }
                 const response = await ai.models.generateContent({
                     model: "gemini-2.5-flash-preview-tts",
-                    contents: text,
+                    contents: [{ parts: [{ text: `Say clearly: ${text}` }] }],
                     config: {
                         responseModalities: [Modality.AUDIO],
                         speechConfig: {

@@ -30,67 +30,109 @@ export const MOCK_COURSES: Course[] = [
           { id: '4', term: 'Amarillo', translation: 'Yellow' },
           { id: '5', term: 'Blanco', translation: 'White' },
           { id: '6', term: 'Negro', translation: 'Black' },
-          { id: '7', term: 'Naranja', translation: 'Orange' },
-          { id: '8', term: 'Rosa', translation: 'Pink' },
         ]
       }
     ]
   },
   {
-    id: 'spanish-foundations-1',
-    title: 'Foundations 1',
-    description: 'Start with the basics: greetings, alphabet, and essential phrases.',
-    icon: '👋',
-    color: 'bg-green-100',
+    id: 'food-and-drink',
+    title: 'Food',
+    description: 'Master vocabulary for ordering at restaurants and cafes.',
+    icon: '🍔',
+    color: 'bg-red-100',
     lessons: [
       { 
-        id: 'sf1-1', 
-        title: 'Greetings', 
-        type: LessonType.READING, 
-        completed: true,
-        content: [
-          "Let's learn some essential Spanish greetings!",
-          "¡Hola! - Hello!",
-          "Buenos días - Good morning",
-          "Buenas tardes - Good afternoon",
-          "Buenas noches - Good evening / Good night",
-          "¿Cómo estás? - How are you? (informal)",
-          "¿Cómo está usted? - How are you? (formal)",
-        ]
-      },
-      { 
-        id: 'sf1-2', 
-        title: 'The Alphabet', 
-        type: LessonType.QUIZ, 
+        id: 'fd1', 
+        title: 'Basic Food', 
+        type: LessonType.FLASHCARD, 
         completed: false,
         content: [
-          { question: "Which letter is pronounced 'ah' in Spanish?", options: ["A", "E", "I", "O"], correctAnswer: "A" },
-          { question: "What is the name of the letter 'J' in Spanish?", options: ["Ge", "Jota", "I griega", "Hache"], correctAnswer: "Jota" },
-          { question: "Which of these is NOT a vowel in Spanish?", options: ["A", "U", "B", "E"], correctAnswer: "B" },
+            { id: 'f1', term: 'Pan', translation: 'Bread' },
+            { id: 'f2', term: 'Agua', translation: 'Water' },
+            { id: 'f3', term: 'Leche', translation: 'Milk' },
+            { id: 'f4', term: 'Fruta', translation: 'Fruit' },
         ]
       },
     ],
   },
   {
-    id: 'food-and-drink',
-    title: 'Food & Drink',
-    description: 'Master vocabulary for ordering at restaurants and cafes.',
-    icon: '🌮',
-    color: 'bg-red-100',
+    id: 'common-verbs',
+    title: 'Common Verbs',
+    description: 'Essential action words for daily life.',
+    icon: '🏃',
+    color: 'bg-blue-50',
     lessons: [
-      { 
-        id: 'fd1', 
-        title: 'In the Restaurant', 
-        type: LessonType.READING, 
-        completed: false,
-        content: [
-            "Time to eat! Here's some vocabulary for the restaurant.",
-            "La mesa - The table",
-            "El menú - The menu",
-            "El camarero / La camarera - The waiter / The waitress",
-            "La cuenta - The check/bill",
-        ]
-      },
-    ],
+      { id: 'verb-1', title: 'Action Verbs', type: LessonType.FLASHCARD, completed: false, content: [{ id: 'v1', term: 'Correr', translation: 'To run' }, { id: 'v2', term: 'Comer', translation: 'To eat' }] }
+    ]
+  },
+  {
+    id: 'body-parts',
+    title: 'Body Parts',
+    description: 'Learn how to describe the human body.',
+    icon: '🧍',
+    color: 'bg-amber-50',
+    lessons: [
+      { id: 'body-1', title: 'Head & Face', type: LessonType.FLASHCARD, completed: false, content: [{ id: 'b1', term: 'Cabeza', translation: 'Head' }, { id: 'b2', term: 'Ojo', translation: 'Eye' }] }
+    ]
+  },
+  {
+    id: 'clothing',
+    title: 'Clothing',
+    description: 'What are you wearing today?',
+    icon: '👕',
+    color: 'bg-red-50',
+    lessons: [
+      { id: 'cloth-1', title: 'Daily Wear', type: LessonType.FLASHCARD, completed: false, content: [{ id: 'c1', term: 'Camisa', translation: 'Shirt' }, { id: 'c2', term: 'Zapatos', translation: 'Shoes' }] }
+    ]
+  },
+  {
+    id: 'places-town',
+    title: 'Places around town',
+    description: 'Navigate your city with ease.',
+    icon: '🏙️',
+    color: 'bg-teal-50',
+    lessons: [
+      { id: 'town-1', title: 'Buildings', type: LessonType.FLASHCARD, completed: false, content: [{ id: 't1', term: 'Banco', translation: 'Bank' }, { id: 't2', term: 'Escuela', translation: 'School' }] }
+    ]
+  },
+  {
+    id: 'emotions',
+    title: 'Emotions',
+    description: 'Express how you feel.',
+    icon: '😄',
+    color: 'bg-rose-50',
+    lessons: [
+      { id: 'emot-1', title: 'Feelings', type: LessonType.FLASHCARD, completed: false, content: [{ id: 'e1', term: 'Feliz', translation: 'Happy' }, { id: 'e2', term: 'Triste', translation: 'Sad' }] }
+    ]
+  },
+  {
+    id: 'household-items',
+    title: 'Household Items',
+    description: 'Vocabulary for everything in your home.',
+    icon: '🏠',
+    color: 'bg-stone-50',
+    lessons: [
+      { id: 'house-1', title: 'Living Room', type: LessonType.FLASHCARD, completed: false, content: [{ id: 'h1', term: 'Sofá', translation: 'Sofa' }, { id: 'h2', term: 'Mesa', translation: 'Table' }] }
+    ]
+  },
+  {
+    id: 'weather-seasons',
+    title: 'Weather and Seasons',
+    description: 'Talking about the climate.',
+    icon: '🌦️',
+    color: 'bg-sky-50',
+    lessons: [
+      { id: 'weather-1', title: 'The Sky', type: LessonType.FLASHCARD, completed: false, content: [{ id: 'w1', term: 'Sol', translation: 'Sun' }, { id: 'w2', term: 'Lluvia', translation: 'Rain' }] }
+    ]
+  },
+  {
+    id: 'occupations',
+    title: 'Occupations',
+    description: 'Jobs and careers in Spanish.',
+    icon: '👨‍⚕️',
+    color: 'bg-emerald-50',
+    lessons: [
+      { id: 'job-1', title: 'Medical', type: LessonType.FLASHCARD, completed: false, content: [{ id: 'j1', term: 'Doctor', translation: 'Doctor' }, { id: 'j2', term: 'Enfermera', translation: 'Nurse' }] }
+    ]
   },
 ];
