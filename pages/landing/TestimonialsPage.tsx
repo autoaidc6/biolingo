@@ -12,7 +12,7 @@ const reviews = [
   {
     name: "Nardin Mohamed",
     role: "Mathematics Teacher",
-    text: "Kalam is a useful platform that helps me understand and learn commonly used terms, especially through real-life scenarios, everyday phrases, and essential verbs. The quick quizzes help check my understanding, making the learning process more interactive and effective.",
+    text: "Biolingo is a useful platform that helps me understand and learn commonly used terms, especially through real-life scenarios, everyday phrases, and essential verbs. The quick quizzes help check my understanding, making the learning process more interactive and effective.",
     stars: 5
   },
   {
