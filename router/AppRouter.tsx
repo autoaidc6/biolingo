@@ -16,10 +16,12 @@ const ProfilePage = lazy(() => import('../pages/ProfilePage').then(module => ({ 
 const ScanPage = lazy(() => import('../pages/ScanPage').then(module => ({ default: module.ScanPage })));
 const VideoLibraryPage = lazy(() => import('../pages/VideoLibraryPage').then(module => ({ default: module.VideoLibraryPage })));
 const VideoDetailPage = lazy(() => import('../pages/VideoDetailPage').then(module => ({ default: module.VideoDetailPage })));
+const DebatePage = lazy(() => import('../pages/DebatePage').then(module => ({ default: module.DebatePage })));
+const DebateTopicPage = lazy(() => import('../pages/DebateTopicPage').then(module => ({ default: module.DebateTopicPage })));
+const DebateSessionPage = lazy(() => import('../pages/DebateSessionPage').then(module => ({ default: module.DebateSessionPage })));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage').then(module => ({ default: module.NotFoundPage })));
 
 // Feature Shells
-const DebatePage = () => <div className="py-20 text-center"><h1 className="text-3xl font-black text-brand-text">Debate & Discuss</h1><p className="mt-4 text-gray-400 font-bold uppercase tracking-widest">Advanced AI Discussions</p></div>;
 const CollectionPage = () => <div className="py-20 text-center"><h1 className="text-3xl font-black text-brand-text">My Collection</h1><p className="mt-4 text-gray-400 font-bold uppercase tracking-widest">Your Saved Vocabulary</p></div>;
 
 // Lazy load marketing pages
@@ -74,6 +76,8 @@ export const AppRouter: React.FC = () => {
             <Route path="/videos" element={<VideoLibraryPage />} />
             <Route path="/video/:id" element={<VideoDetailPage />} />
             <Route path="/debate" element={<DebatePage />} />
+            <Route path="/debate/:id" element={<DebateTopicPage />} />
+            <Route path="/debate/:id/:side" element={<DebateSessionPage />} />
             <Route path="/collection" element={<CollectionPage />} />
           </Route>
 

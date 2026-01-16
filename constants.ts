@@ -1,4 +1,4 @@
-import { Course, User, LessonType, Video, ProficiencyLevel } from './types';
+import { Course, User, LessonType, Video, ProficiencyLevel, DebateTopic } from './types';
 
 export const MOCK_USER: User = {
   id: '1',
@@ -191,5 +191,80 @@ export const MOCK_VIDEOS: Video[] = [
     duration: '11:00',
     thumbnail: 'https://i.ytimg.com/vi/S_h6rW3-N6c/hqdefault.jpg',
     transcript: 'Sonrisa, ceño fruncido, sorpresa. (Smile, frown, surprise.)\n¿Cómo te sientes hoy? Estoy feliz. (How do you feel today? I am happy.)\nLas expresiones faciales son universales. (Facial expressions are universal.)'
+  }
+];
+
+export const DEBATE_TOPICS: DebateTopic[] = [
+  {
+    id: 'tech-edu',
+    title: 'Technology in Education',
+    description: 'Does technology truly improve learning outcomes, or is it just a distraction in the classroom?',
+    image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=600&h=400&auto=format&fit=crop'
+  },
+  {
+    id: 'social-media',
+    title: 'Impacts of Social media',
+    description: 'Social media can connect people across the world, but it can also contribute to loneliness and superficial relationships. Does it strengthen or weaken social bonds?',
+    image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=600&h=400&auto=format&fit=crop'
+  },
+  {
+    id: 'homework',
+    title: 'Homework',
+    description: 'Is homework necessary for reinforcing what students learn, or does it cause unnecessary stress for children?',
+    image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=600&h=400&auto=format&fit=crop'
+  },
+  {
+    id: 'ubi',
+    title: 'Universal Basic Income',
+    description: 'Should governments provide a guaranteed minimum income to all citizens regardless of employment status?',
+    image: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?q=80&w=600&h=400&auto=format&fit=crop'
+  },
+  {
+    id: 'work-life',
+    title: 'Work-Life Balance',
+    description: 'Is the traditional 40-hour work week outdated in the digital age?',
+    image: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=600&h=400&auto=format&fit=crop'
+  },
+  {
+    id: 'public-transport',
+    title: 'Free Public Transport',
+    description: 'Should cities provide free public transportation to reduce carbon emissions and congestion?',
+    image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=600&h=400&auto=format&fit=crop'
+  },
+  {
+    id: 'smartphones-kids',
+    title: 'Smartphones for Children',
+    description: 'At what age should a child be given their first smartphone?',
+    image: 'https://images.unsplash.com/photo-1512428559083-a401932e1ff5?q=80&w=600&h=400&auto=format&fit=crop'
+  },
+  {
+    id: 'animal-testing',
+    title: 'Animal Testing',
+    description: 'Is it ethical to use animals for scientific research and testing medicines?',
+    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600&h=400&auto=format&fit=crop'
+  },
+  {
+    id: 'free-healthcare',
+    title: 'Free Healthcare for All',
+    description: 'Is healthcare a fundamental human right that should be provided for free by the state?',
+    image: 'https://images.unsplash.com/photo-1538108149393-fdfd81895907?q=80&w=600&h=400&auto=format&fit=crop'
+  },
+  {
+    id: 'one-child',
+    title: 'One Child Policy',
+    description: 'Are population control policies necessary for sustainable development?',
+    image: 'https://images.unsplash.com/photo-1510771453102-80c75204240e?q=80&w=600&h=400&auto=format&fit=crop'
+  },
+  {
+    id: 'meat',
+    title: 'Eating Meat',
+    description: 'Should society shift towards a plant-based diet to protect the environment?',
+    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=600&h=400&auto=format&fit=crop'
+  },
+  {
+    id: 'sugary-drinks',
+    title: 'Banning Sugary Drinks',
+    description: 'Should the government tax or ban sugary drinks to combat obesity?',
+    image: 'https://images.unsplash.com/photo-1527960669566-f882ba85a4c6?q=80&w=600&h=400&auto=format&fit=crop'
   }
 ];

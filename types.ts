@@ -66,3 +66,10 @@ export interface Video {
   thumbnail: string;
   transcript: string;
 }
+
+export interface DebateTopic {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+}
