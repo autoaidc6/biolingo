@@ -1,3 +1,4 @@
+
 import React, { Suspense, lazy } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -27,6 +28,8 @@ const FeaturesPage = lazy(() => import('../pages/landing/FeaturesPage').then(mod
 const PricingPage = lazy(() => import('../pages/landing/PricingPage').then(module => ({ default: module.PricingPage })));
 const TestimonialsPage = lazy(() => import('../pages/landing/TestimonialsPage').then(module => ({ default: module.TestimonialsPage })));
 const FAQPage = lazy(() => import('../pages/landing/FAQPage').then(module => ({ default: module.FAQPage })));
+const PrivacyPolicyPage = lazy(() => import('../pages/landing/PrivacyPolicyPage').then(module => ({ default: module.PrivacyPolicyPage })));
+const TermsOfServicePage = lazy(() => import('../pages/landing/TermsOfServicePage').then(module => ({ default: module.TermsOfServicePage })));
 const LoginPage = lazy(() => import('../pages/LoginPage').then(module => ({ default: module.LoginPage })));
 
 const FullscreenLoader: React.FC = () => (
@@ -53,6 +56,8 @@ export const AppRouter: React.FC = () => {
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/testimonials" element={<TestimonialsPage />} />
             <Route path="/faq" element={<FAQPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsOfServicePage />} />
             <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
           </Route>
 

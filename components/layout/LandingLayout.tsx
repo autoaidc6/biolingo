@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Button } from '../ui/Button';
@@ -92,13 +93,13 @@ export const LandingLayout: React.FC = () => {
             <h4 className="font-bold mb-6 uppercase text-xs tracking-[0.2em] text-gray-500">Support</h4>
             <ul className="space-y-4 text-sm font-bold text-gray-300">
               <li><Link to="/faq" className="hover:text-brand-purple transition-colors">FAQ</Link></li>
-              <li><a href="#" className="hover:text-brand-purple transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-brand-purple transition-colors">Terms of Service</a></li>
+              <li><Link to="/privacy" className="hover:text-brand-purple transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="hover:text-brand-purple transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
         <div className="max-w-6xl mx-auto mt-16 pt-8 border-t border-gray-800 text-center text-xs text-gray-500 font-bold uppercase tracking-widest">
-          © 2025 Biolingo Inc. Built with ❤️ for language learners.
+          © 2025 Biolingo Inc. 
         </div>
       </footer>
     </div>
