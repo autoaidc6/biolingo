@@ -144,8 +144,8 @@ export const MOCK_VIDEOS: Video[] = [
     youtubeId: 'p0m_lS_7yA8',
     level: ProficiencyLevel.BEGINNER,
     duration: '2:40',
-    thumbnail: 'https://i.ytimg.com/vi/p0m_lS_7yA8/maxresdefault.jpg',
-    transcript: 'Hola, ¿cómo estás? \nMuy bien, ¿y tú? \nYo también, gracias. ¿Cómo te llamas? \nMi nombre es Juan. ¿De dónde eres?'
+    thumbnail: 'https://i.ytimg.com/vi/p0m_lS_7yA8/hqdefault.jpg',
+    transcript: 'Hola, ¿cómo estás? (Hello, how are you?)\nMuy bien, ¿y tú? (Very well, and you?)\nYo también, gracias. ¿Cómo te llamas? (Me too, thanks. What is your name?)\nMi nombre es Juan. ¿De dónde eres? (My name is Juan. Where are you from?)\nSoy de México. ¡Mucho gusto! (I am from Mexico. Nice to meet you!)'
   },
   {
     id: 'vid-2',
@@ -153,8 +153,8 @@ export const MOCK_VIDEOS: Video[] = [
     youtubeId: '56OXP92SryE',
     level: ProficiencyLevel.INTERMEDIATE,
     duration: '4:30',
-    thumbnail: 'https://i.ytimg.com/vi/56OXP92SryE/maxresdefault.jpg',
-    transcript: 'A, B, C, CH, D, E, F, G... \nCanta conmigo el abecedario. \nCada letra tiene su sonido especial.'
+    thumbnail: 'https://i.ytimg.com/vi/56OXP92SryE/hqdefault.jpg',
+    transcript: 'A, B, C, CH, D, E, F, G... (A, B, C, CH, D, E, F, G...)\nCanta conmigo el abecedario. (Sing the alphabet with me.)\nCada letra tiene su sonido especial. (Each letter has its special sound.)\n¡Aprender español es muy divertido! (Learning Spanish is very fun!)'
   },
   {
     id: 'vid-3',
@@ -162,8 +162,8 @@ export const MOCK_VIDEOS: Video[] = [
     youtubeId: 'j80t0kQ4E_0',
     level: ProficiencyLevel.BEGINNER,
     duration: '3:53',
-    thumbnail: 'https://i.ytimg.com/vi/j80t0kQ4E_0/maxresdefault.jpg',
-    transcript: '¿Qué hora es? \n¿Dónde está el baño? \n¿Cuánto cuesta esto? \nEstas son frases esenciales para viajar.'
+    thumbnail: 'https://i.ytimg.com/vi/j80t0kQ4E_0/hqdefault.jpg',
+    transcript: '¿Qué hora es? (What time is it?)\n¿Dónde está el baño? (Where is the bathroom?)\n¿Cuánto cuesta esto? (How much does this cost?)\nEstas son frases esenciales para viajar. (These are essential phrases for traveling.)'
   },
   {
     id: 'vid-4',
@@ -171,8 +171,8 @@ export const MOCK_VIDEOS: Video[] = [
     youtubeId: '7B6fB_P_7o0',
     level: ProficiencyLevel.BEGINNER,
     duration: '2:50',
-    thumbnail: 'https://i.ytimg.com/vi/7B6fB_P_7o0/maxresdefault.jpg',
-    transcript: 'Hoy vamos a aprender los pilares de la gramática española. \nSustantivos, verbos, adjetivos, adverbios y preposiciones.'
+    thumbnail: 'https://i.ytimg.com/vi/7B6fB_P_7o0/hqdefault.jpg',
+    transcript: 'Hoy vamos a aprender los pilares de la gramática española. (Today we are going to learn the pillars of Spanish grammar.)\nSustantivos, verbos, adjetivos, adverbios y preposiciones. (Nouns, verbs, adjectives, adverbs and prepositions.)\nEntender esto te ayudará a construir frases. (Understanding this will help you build sentences.)'
   },
   {
     id: 'vid-5',
@@ -180,8 +180,8 @@ export const MOCK_VIDEOS: Video[] = [
     youtubeId: 'qf_fL0yE5zM',
     level: ProficiencyLevel.BEGINNER,
     duration: '28:07',
-    thumbnail: 'https://i.ytimg.com/vi/qf_fL0yE5zM/maxresdefault.jpg',
-    transcript: 'Manzana, plátano, naranja, uva. \nVamos al mercado a comprar fruta fresca.'
+    thumbnail: 'https://i.ytimg.com/vi/qf_fL0yE5zM/hqdefault.jpg',
+    transcript: 'Manzana, plátano, naranja, uva. (Apple, banana, orange, grape.)\nVamos al mercado a comprar fruta fresca. (Let\'s go to the market to buy fresh fruit.)\n¿Cuál es tu fruta favorita? (What is your favorite fruit?)'
   },
   {
     id: 'vid-6',
@@ -189,7 +189,7 @@ export const MOCK_VIDEOS: Video[] = [
     youtubeId: 'S_h6rW3-N6c',
     level: ProficiencyLevel.BEGINNER,
     duration: '11:00',
-    thumbnail: 'https://i.ytimg.com/vi/S_h6rW3-N6c/maxresdefault.jpg',
-    transcript: 'Sonrisa, ceño fruncido, sorpresa. \n¿Cómo te sientes hoy? Estoy feliz.'
+    thumbnail: 'https://i.ytimg.com/vi/S_h6rW3-N6c/hqdefault.jpg',
+    transcript: 'Sonrisa, ceño fruncido, sorpresa. (Smile, frown, surprise.)\n¿Cómo te sientes hoy? Estoy feliz. (How do you feel today? I am happy.)\nLas expresiones faciales son universales. (Facial expressions are universal.)'
   }
 ];
