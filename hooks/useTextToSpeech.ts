@@ -4,7 +4,6 @@ import { decode, decodeAudioData } from '../utils/audio';
 
 // FIX: Cast window to `any` to allow access to vendor-prefixed `webkitAudioContext` for broader browser compatibility.
 const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 const audioCache = new Map<string, AudioBuffer>();
 
 // This will hold the 'stop' function of the currently playing audio hook.
@@ -54,6 +53,11 @@ export const useTextToSpeech = (text: string) => {
             return;
         }
 
+        // Ensure the AudioContext is resumed before attempting to play sound
+        if (audioContext.state === 'suspended') {
+            await audioContext.resume();
+        }
+
         let audioBuffer: AudioBuffer | undefined = audioCache.get(text);
 
         if (!audioBuffer) {
@@ -62,9 +66,14 @@ export const useTextToSpeech = (text: string) => {
                 if (!process.env.API_KEY) {
                   throw new Error("API key not configured.");
                 }
+                
+                // Re-initialize AI client right before use to ensure it has the latest environment state
+                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+                
                 const response = await ai.models.generateContent({
                     model: "gemini-2.5-flash-preview-tts",
-                    contents: { parts: [{ text: `Say clearly: ${text}` }] }, // Correct multi-part format
+                    // CRITICAL: Must be an array of objects with a 'parts' property containing an array of part objects.
+                    contents: [{ parts: [{ text: `Say clearly: ${text}` }] }],
                     config: {
                         responseModalities: [Modality.AUDIO],
                         speechConfig: {
@@ -72,8 +81,9 @@ export const useTextToSpeech = (text: string) => {
                         },
                     },
                 });
+                
                 const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-                if (!base64Audio) throw new Error("No audio data received");
+                if (!base64Audio) throw new Error("No audio data received from Gemini API");
                 
                 const decodedBytes = decode(base64Audio);
                 const buffer = await decodeAudioData(decodedBytes, audioContext, 24000, 1);
